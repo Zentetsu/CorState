@@ -34,4 +34,5 @@ HISTORY:
 '''
 
 
-from .StateMachine import StateMachine
+from .State import State
+from .Machine import Machine

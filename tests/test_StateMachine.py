@@ -34,13 +34,14 @@ HISTORY:
 '''
 
 
-from context import StateMachine
-from CorState.StateMachine import StateMachine
+from context import State, Machine
+from CorState.State import State
+from CorState.Machine import Machine
 
 def test_createInstance():
     print("Create Instance:", end=" ")
     try:
-        sm = StateMachine()
+        sm = State()
         print("SUCCESSED")
         assert True
     except:

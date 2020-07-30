@@ -1,5 +1,5 @@
 '''
-File: StateMachine.py
+File: State.py
 Created Date: Sunday, July 0th 2020, 12:13:46 am
 Author: Zentetsu
 
@@ -37,19 +37,37 @@ HISTORY:
 from .CorStateError import *
 
 
-class StateMachine:
-    """StateMachine class
+class State:
+    """State class
     """
     def __init__(self):
         """Class constructor
         """
+        self.name = ""
+        self.cur_state = None
+        self.time = None
+        self.first = False
+
+    def start(self):
+        pass
+
+    def _enterAction(self):
+        pass
+
+    def _exitAction(self):
+        pass
+
+    def _readValue(self):
+        pass
+
+    def _writeValue(self):
         pass
 
     def __repr__(self):
-        """Redefined method to print value of the StateMachine class instance
+        """Redefined method to print value of the State class instance
 
         Returns:
-            str: printable value of StateMachine class instance
+            str: printable value of State class instance
         """
         s = ""
 
