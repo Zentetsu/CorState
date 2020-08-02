@@ -49,18 +49,28 @@ class State:
         self.first = False
 
     def start(self):
+        """Method that will initialize the current state
+        """
         pass
 
     def _enterAction(self):
+        """Method which will be called up immediately after entering the current state
+        """
         pass
 
     def _exitAction(self):
+        """Method that will be called before exiting the current state
+        """
         pass
 
     def _readValue(self):
+        """Read value from the shared data
+        """
         pass
 
     def _writeValue(self):
+        """Write value into the shared data
+        """
         pass
 
     def __repr__(self):
