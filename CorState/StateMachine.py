@@ -34,14 +34,21 @@ HISTORY:
 '''
 
 
+import json
+import os
+
+
 class StateMachine:
     """StateMachine class
     """
-    def __init__(self):
+    def __init__(self, name: str):
         """Class constructor
         """
-        self.name = ""
+        self.name = name
         self.shared_var = []
+        self.states = {}
+
+        self.data = None
 
     def start(self):
         """Method that launches the state StateMachine
@@ -61,12 +68,30 @@ class StateMachine:
     def _checkIntegrity(self):
         """Method that checks the JSON file integrity
         """
-        pass
+        if not os.path.isfile(self.data["path"]):
+            print("ERROR")
 
-    def loadJSON(self):
+        file_sm = open(self.data["path"], "r+")
+        lines = file_sm.readlines()
+
+        for s in self.data["StateMachine"]["State"].keys():
+            if True not in ["def state_" + s in l for l in lines]:
+                file_sm.write("def state_" + s +"():\n\t#TODO\n\tpass\n\n")
+
+        for t in self.data["StateMachine"]["Transition"].keys():
+            if True not in ["def transition_" + t in l for l in lines]:
+                file_sm.write("def transition_" + t +"():\n\t#TODO\n\tpass\n\n")
+
+        file_sm.close()
+
+    def loadJSON(self, path: str):
         """Method that loads JSON file
         """
-        pass
+        json_file = open(path)
+        self.data = json.load(json_file)
+        json_file.close()
+
+        self._checkIntegrity()
 
     def dumpJSON(self):
         """Method that saves StateMachine  to a JSON file

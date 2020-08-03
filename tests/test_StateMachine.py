@@ -34,14 +34,48 @@ HISTORY:
 '''
 
 
-from context import State, Machine
+# from context import State, Transition, StateMachine
 from CorState.State import State
-from CorState.Machine import Machine
+from CorState.Transition import Transition
+from CorState.StateMachine import StateMachine
 
-def test_createInstance():
-    print("Create Instance:", end=" ")
+def test_createStateInstance():
+    print("Create State Instance:", end=" ")
     try:
-        sm = State()
+        s = State()
+        assert s.getID() == 0
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
+def test_createTransitionInstance():
+    print("Create Transition Instance:", end=" ")
+    try:
+        t = Transition()
+        assert t.getID() == 0
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
+def test_createStateMachineInstance():
+    print("Create StateMachine Instance:", end=" ")
+    try:
+        sm = StateMachine("test")
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
+def test_loadJSONFile():
+    print("load JSON file:", end=" ")
+    try:
+        sm = StateMachine("test")
+        sm.loadJSON("./tests/test.json")
         print("SUCCESSED")
         assert True
     except:
@@ -49,5 +83,8 @@ def test_createInstance():
         assert False
 
 print("-"*10)
-test_createInstance()
+test_createStateInstance()
+test_createTransitionInstance()
+test_createStateMachineInstance()
+test_loadJSONFile()
 print("-"*10)

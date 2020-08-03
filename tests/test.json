@@ -1,0 +1,27 @@
+{
+    "path": "./tests/sm.py",
+    "StateMachine": {
+        "State": {
+            "s0": {
+                "id": 0,
+                "name": "n0"
+            },
+            "s1": {
+                "id": 1,
+                "name": "n1"
+            }
+        },
+        "Transition": {
+            "in": {
+                "id_in": 0
+            },
+            "out": {
+                "id_out": 1
+            },
+            "t0": {
+                "id_out": 0,
+                "id_in": 1
+            }
+        }
+    }
+}

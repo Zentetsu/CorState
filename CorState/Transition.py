@@ -1,6 +1,6 @@
 '''
-File: State.py
-Created Date: Sunday, July 0th 2020, 12:13:46 am
+File: Transition.py
+Created Date: Sunday, August 0th 2020, 5:46:20 pm
 Author: Zentetsu
 
 ----
@@ -37,35 +37,35 @@ HISTORY:
 from .CorStateError import *
 
 
-class State:
-    """State class
+class Transition:
+    """Transition class
     """
-    nb_state = 0
+    nb_transition = 0
 
     def __init__(self):
         """Class constructor
         """
-        self.id = State.nb_state
-        State.nb_state = State.nb_state + 1
+        self.id = Transition.nb_transition
+        Transition.nb_transition = Transition.nb_transition + 1
 
+        self.state_id = []
         self.name = ""
-        self.transitions = {}
 
         self.action = None
 
     def getID(self) -> int:
-        """Method that returns State ID
+        """Method that returns Transition ID
 
         Returns:
-            int: State ID
+            int: Transition ID
         """
         return self.id
 
     def __repr__(self) -> str:
-        """Redefined method to print value of the State class instance
+        """Redefined method to print value of the Transition class instance
 
         Returns:
-            str: printable value of State class instance
+            str: printable value of Transition class instance
         """
         s = ""
 
