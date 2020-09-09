@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-10	Zen	Refactoring the Transition structure
 '''
 
 
@@ -40,18 +41,17 @@ from .CorStateError import *
 class Transition:
     """Transition class
     """
-    nb_transition = 0
+    _nb_transition = 0
 
     def __init__(self):
         """Class constructor
         """
-        self.id = Transition.nb_transition
-        Transition.nb_transition = Transition.nb_transition + 1
+        self._id = Transition._nb_transition
+        Transition._nb_transition = Transition._nb_transition + 1
 
-        self.state_id = []
-        self.name = ""
-
-        self.action = None
+        self._ioID = None
+        self._nsi = None
+        self._evaluation = None
 
     def getID(self) -> int:
         """Method that returns Transition ID
@@ -59,7 +59,48 @@ class Transition:
         Returns:
             int: Transition ID
         """
-        return self.id
+        return self._id
+
+    def initByTFF(self, tff:dict):
+        """Method that initialzes transition from a dict
+
+        Args:
+            tff (dict, optional): transition from file.
+        """
+        pass
+
+    def setInOutID(self, ini:int, outi:int):
+        """Method that initializes the in and out state id
+
+        Args:
+            ini (int): in state id
+            outi (int): out state id
+        """
+        self._ioID = (ini, outi)
+
+    def getInOutID(self) -> (int, int):
+        """Method that returns the in and out state id
+
+        Returns:
+            (int, int): tuple of in and out state id
+        """
+        return self._ioID
+
+    def addEvaluation(self, evaluation):
+        """Method that evaluates a condition to allow the State Machien to move to the next state
+
+        Args:
+            evaluation ([type]): Function called to evaluate the possibilite to move to the next state
+        """
+        self._evaluation = evaluation
+
+    def evaluate(self) -> bool:
+        """Meyhod that runs the evalaute function
+
+        Returns:
+            bool: Evaluation result
+        """
+        return self._evaluation()
 
     def __repr__(self) -> str:
         """Redefined method to print value of the Transition class instance
@@ -67,6 +108,6 @@ class Transition:
         Returns:
             str: printable value of Transition class instance
         """
-        s = ""
+        s = "Transition id: " + self._id.__repr__() + "; (in, out): " + self._ioID.__repr__()
 
         return s

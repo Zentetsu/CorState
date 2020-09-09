@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-10	Zen	Adding test to check if the StateMachine works with a single state
 '''
 
 
@@ -45,7 +46,6 @@ def test_createStateInstance():
         s = State()
         assert s.getID() == 0
         print("SUCCESSED")
-        assert True
     except:
         print("FAILED")
         assert False
@@ -56,7 +56,6 @@ def test_createTransitionInstance():
         t = Transition()
         assert t.getID() == 0
         print("SUCCESSED")
-        assert True
     except:
         print("FAILED")
         assert False
@@ -65,6 +64,77 @@ def test_createStateMachineInstance():
     print("Create StateMachine Instance:", end=" ")
     try:
         sm = StateMachine("test")
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
+def test_addStateToSM():
+    print("Add State To StateMachine Instance:", end=" ")
+    try:
+        sm = StateMachine("test")
+        s = State()
+        sm.addState(s)
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
+def test_addTransitionToSM():
+    print("Add Transition To StateMachine Instance:", end=" ")
+    try:
+        sm = StateMachine("test")
+        t = Transition()
+        t.setInOutID(None, 0)
+        sm.addTransition(t)
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
+def test_simpleSM():
+    print("Create Simple StateMachine:", end=" ")
+    try:
+        sm = StateMachine("test")
+        s = State()
+        t1 = Transition()
+        t1.setInOutID(None, s.getID())
+        t2 = Transition()
+        t2.setInOutID(s.getID(), None)
+        sm.addState(s)
+        sm.addTransition(t1)
+        sm.addTransition(t2)
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
+def ev():
+    return True
+
+def act():
+    pass
+
+def test_runSimpleSM():
+    print("Run Simple StateMachine:", end=" ")
+    try:
+        sm = StateMachine("test")
+        s = State()
+        s.addAction(act)
+        t1 = Transition()
+        t1.setInOutID(-1, s.getID())
+        t1.addEvaluation(ev)
+        t2 = Transition()
+        t2.setInOutID(s.getID(), -2)
+        t2.addEvaluation(ev)
+        sm.addState(s)
+        sm.addTransition(t1)
+        sm.addTransition(t2)
+        sm.start()
         print("SUCCESSED")
         assert True
     except:
@@ -86,5 +156,9 @@ print("-"*10)
 test_createStateInstance()
 test_createTransitionInstance()
 test_createStateMachineInstance()
+test_addStateToSM()
+test_addTransitionToSM()
+test_simpleSM()
+test_runSimpleSM()
 test_loadJSONFile()
 print("-"*10)

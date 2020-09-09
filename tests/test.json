@@ -4,23 +4,26 @@
         "State": {
             "s0": {
                 "id": 0,
-                "name": "n0"
+                "action": "fa1"
             },
             "s1": {
                 "id": 1,
-                "name": "n1"
+                "action": "fa2"
             }
         },
         "Transition": {
             "in": {
-                "id_in": 0
+                "id_in": 0,
+                "evaluation": "ft1"
             },
             "out": {
-                "id_out": 1
+                "id_out": 1,
+                "evaluation": "ft2"
             },
             "t0": {
                 "id_out": 0,
-                "id_in": 1
+                "id_in": 1,
+                "evaluation": "ft3"
             }
         }
     }

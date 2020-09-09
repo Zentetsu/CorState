@@ -31,27 +31,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-10	Zen	Refactoring the State structure
 '''
 
 
 from .CorStateError import *
+from .Transition import Transition
 
 
 class State:
     """State class
     """
-    nb_state = 0
+    _nb_state = 0
 
     def __init__(self):
         """Class constructor
         """
-        self.id = State.nb_state
-        State.nb_state = State.nb_state + 1
+        self._id = State._nb_state
+        State._nb_state = State._nb_state + 1
 
-        self.name = ""
-        self.transitions = {}
-
-        self.action = None
+        self._action = None
 
     def getID(self) -> int:
         """Method that returns State ID
@@ -59,7 +58,28 @@ class State:
         Returns:
             int: State ID
         """
-        return self.id
+        return self._id
+
+    def initBySFF(self, sff:dict):
+        """Method that initialzes state from a dict
+
+        Args:
+            sff (dict, optional): state from file.
+        """
+        pass
+
+    def addAction(self, action):
+        """Method that adds action to this state
+
+        Args:
+            action ([type]): action that will be executed by this state
+        """
+        self._action = action
+
+    def run(self):
+        """Method that will run the action defined to this state
+        """
+        self._action()
 
     def __repr__(self) -> str:
         """Redefined method to print value of the State class instance
@@ -67,6 +87,6 @@ class State:
         Returns:
             str: printable value of State class instance
         """
-        s = ""
+        s = "State id: " + str(self._id)
 
         return s
