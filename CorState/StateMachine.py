@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-10	Zen	Generating StateMachine from JSON file
 2020-09-10	Zen	Refactoring the StateMachine structure
 '''
 
@@ -65,7 +66,7 @@ class StateMachine:
             _breaked = False
 
             for tr in self._transitions.keys():
-                if self._transitions[tr].getInOutID()[0] == _stateID and _stateID and self._transitions[tr].evaluate():
+                if self._transitions[tr].getInOutID()[0] == _stateID and self._transitions[tr].evaluate():
                     _stateID = self._transitions[tr].getInOutID()[1]
                     _breaked = True
                     break
@@ -73,12 +74,12 @@ class StateMachine:
             if _breaked and _stateID != -2:
                 self._states[_stateID].run()
 
-    def addState(self, value=None):
+    def addState(self, value=None, path:str=None):
         """Method that adds a state to the StateMachine
         """
         if type(value) is dict:
             _state = State()
-            _state.initBySFF(value)
+            _state.initBySFF(value, path)
         elif type(value) is State:
             _state = value
         elif value is None:
@@ -97,12 +98,12 @@ class StateMachine:
     def getStates(self):
         return self._states
 
-    def addTransition(self, value=None):
+    def addTransition(self, value=None, path:str=None):
         """Method that adds a Transition to the TransitionMachine
         """
         if type(value) is dict:
             _transition = Transition()
-            _transition.initBySFF(value)
+            _transition.initByTFF(value, path)
         elif type(value) is Transition:
             _transition = value
         elif value is None:
@@ -111,7 +112,7 @@ class StateMachine:
         else:
             print("ERROR")
 
-        self._transitions[_transition.getInOutID()] = _transition
+        self._transitions[_transition.getID()] = _transition
 
     def removeTransition(self, transition_id:int):
         """Method which removes a Transition from the Transition Machine
@@ -121,37 +122,67 @@ class StateMachine:
     def _checkStateMachineIntegrity(self):
         """Method that checks the integrity of the StateMachine
         """
-        pass
+        if [self._transitions[t].getInOutID()[0] == -1 and self._transitions[t].getInOutID()[1] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+            print("ERROR")
 
-    def _checkIntegrity(self):
+        if [self._transitions[t].getInOutID()[1] == -2 and self._transitions[t].getInOutID()[0] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+            print("ERROR")
+
+    def _checkJSONIntegrity(self):
         """Method that checks the JSON file integrity
         """
+        if not all([k in self._data.keys() for k in ["path", "StateMachine"]]):
+            print("ERROR")
+
+        if not all([k in self._data["StateMachine"].keys() for k in ["Variable", "State", "Transition"]]):
+            print("ERROR")
+
+        if len(self._data["StateMachine"]["State"].keys()) > 0 and not all([k in self._data["StateMachine"]["State"][s].keys() for k in ["id", "action"] for s in self._data["StateMachine"]["State"].keys()]):
+            print("ERROR")
+
+        if not all([t in self._data["StateMachine"]["Transition"].keys() for t in ["in", "out"]]):
+            print("ERROR")
+
+        if not all([k in self._data["StateMachine"]["Transition"][t].keys() for k in ["id_in", "id_out", "evaluation"] for t in self._data["StateMachine"]["Transition"].keys()]):
+            print("ERROR")
+
+    def _generateStateMachineStructure(self):
         if not os.path.isfile(self._data["path"]):
             print("ERROR")
 
         file_sm = open(self._data["path"], "r+")
         lines = file_sm.readlines()
 
+        for v in self._data["StateMachine"]["Variable"].keys():
+            if True not in [v in l for l in lines]:
+                file_sm.write(v + " = " + str(self._data["StateMachine"]["Variable"][v]) + "\n")
+
         for s in self._data["StateMachine"]["State"].keys():
-            if True not in ["def state_" + s in l for l in lines]:
-                file_sm.write("def state_" + s +"():\n\t#TODO\n\tpass\n\n")
+            if True not in ["def " + self._data["StateMachine"]["State"][s]["action"] in l for l in lines]:
+                file_sm.write("def " + self._data["StateMachine"]["State"][s]["action"] +"():\n\t#TODO\n\tpass\n\n")
+
+            self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
 
         for t in self._data["StateMachine"]["Transition"].keys():
-            if True not in ["def transition_" + t in l for l in lines]:
-                file_sm.write("def transition_" + t +"():\n\t#TODO\n\tpass\n\n")
+            if True not in ["def " + self._data["StateMachine"]["Transition"][t]["evaluation"] in l for l in lines]:
+                file_sm.write("def " + self._data["StateMachine"]["Transition"][t]["evaluation"] +"():\n\t#TODO\n\tpass\n\n")
+
+            self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
 
         file_sm.close()
 
-    def loadJSON(self, path: str):
+
+    def loadJSON(self, path:str):
         """Method that loads JSON file
         """
         json_file = open(path)
         self._data = json.load(json_file)
         json_file.close()
 
-        self._checkIntegrity()
+        self._checkJSONIntegrity()
+        self._generateStateMachineStructure()
 
-    def dumpJSON(self):
+    def dumpJSON(self, name:str):
         """Method that saves StateMachine  to a JSON file
         """
         pass

@@ -1,6 +1,10 @@
 {
     "path": "./tests/sm.py",
     "StateMachine": {
+        "Variable": {
+            "v1": 0,
+            "v2": false
+        },
         "State": {
             "s0": {
                 "id": 0,
@@ -13,16 +17,21 @@
         },
         "Transition": {
             "in": {
-                "id_in": 0,
+                "id": 0,
+                "id_in": -1,
+                "id_out": 0,
                 "evaluation": "ft1"
             },
             "out": {
-                "id_out": 1,
+                "id": 1,
+                "id_in": 1,
+                "id_out": -2,
                 "evaluation": "ft2"
             },
             "t0": {
-                "id_out": 0,
-                "id_in": 1,
+                "id": 2,
+                "id_in": 0,
+                "id_out": 1,
                 "evaluation": "ft3"
             }
         }

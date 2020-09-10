@@ -2,13 +2,14 @@
 Lightweight and versatile State Machine library
 
 ### Features
-* ...
+* State Machine implementation
+* Load structure from JSON file
 
 ### Future improvement
-* State Machine implementation
+
 * Petry Net implementation
 * GUI editor
-* Load structure from JSON file
+
 
 ### More
 [![PyPI version](https://badge.fury.io/py/CorState.svg)](https://badge.fury.io/py/CorState)

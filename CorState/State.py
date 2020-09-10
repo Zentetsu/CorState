@@ -36,7 +36,7 @@ HISTORY:
 
 
 from .CorStateError import *
-from .Transition import Transition
+import importlib
 
 
 class State:
@@ -60,13 +60,17 @@ class State:
         """
         return self._id
 
-    def initBySFF(self, sff:dict):
+    def initBySFF(self, sff:dict, path):
         """Method that initialzes state from a dict
 
         Args:
             sff (dict, optional): state from file.
         """
-        pass
+        self.mod = importlib.import_module("sm", path)
+        globals().update(self.mod.__dict__)
+
+        self._id = sff["id"]
+        self._action = getattr(self.mod, sff["action"])
 
     def addAction(self, action):
         """Method that adds action to this state

@@ -36,6 +36,7 @@ HISTORY:
 
 
 from .CorStateError import *
+import importlib
 
 
 class Transition:
@@ -50,7 +51,6 @@ class Transition:
         Transition._nb_transition = Transition._nb_transition + 1
 
         self._ioID = None
-        self._nsi = None
         self._evaluation = None
 
     def getID(self) -> int:
@@ -61,13 +61,18 @@ class Transition:
         """
         return self._id
 
-    def initByTFF(self, tff:dict):
+    def initByTFF(self, tff:dict, path):
         """Method that initialzes transition from a dict
 
         Args:
             tff (dict, optional): transition from file.
         """
-        pass
+        mod = importlib.import_module("sm", path)
+        globals().update(mod.__dict__)
+
+        self._id = tff["id"]
+        self._ioID = (tff["id_in"], tff["id_out"])
+        self._evaluation = getattr(mod, tff["evaluation"])
 
     def setInOutID(self, ini:int, outi:int):
         """Method that initializes the in and out state id

@@ -1,20 +1,31 @@
-def state_s0():
+v1 = 0
+v2 = False
+
+def fa1():
 	#TODO
+	# print("fa1")
 	pass
 
-def state_s1():
+def fa2():
 	#TODO
+	# print("fa2")
 	pass
 
-def transition_in():
+def ft1():
 	#TODO
 	pass
+	# print("ft1")
+	return True
 
-def transition_out():
+def ft2():
 	#TODO
 	pass
+	# print("ft2")
+	return True
 
-def transition_t0():
+def ft3():
 	#TODO
 	pass
+	# print("ft3")
+	return True
 
