@@ -1,5 +1,5 @@
 {
-    "path": "./tests/sm.py",
+    "path": "../tests/sm.py",
     "StateMachine": {
         "Variable": {
             "v1": 0,

@@ -146,7 +146,7 @@ def test_loadJSONFile():
     print("load JSON file:", end=" ")
     try:
         sm = StateMachine("test")
-        sm.loadJSON("./tests/test.json")
+        sm.loadJSON("../tests/test.json")
         sm.start()
         print("SUCCESSED")
         assert True
