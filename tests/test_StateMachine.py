@@ -36,7 +36,7 @@ HISTORY:
 '''
 
 
-from context import State, Transition, StateMachine
+# from context import State, Transition, StateMachine
 from CorState.State import State
 from CorState.Transition import Transition
 from CorState.StateMachine import StateMachine
