@@ -45,7 +45,7 @@ def test_createStateInstance():
     print("Create State Instance:", end=" ")
     try:
         s = State()
-        assert s.getID() == 0
+        assert type(s.getID()) == int
         print("SUCCESSED")
     except:
         print("FAILED")
@@ -55,7 +55,7 @@ def test_createTransitionInstance():
     print("Create Transition Instance:", end=" ")
     try:
         t = Transition()
-        assert t.getID() == 0
+        assert type(t.getID()) == int
         print("SUCCESSED")
     except:
         print("FAILED")
