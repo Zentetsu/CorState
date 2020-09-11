@@ -60,13 +60,13 @@ class State:
         """
         return self._id
 
-    def initBySFF(self, sff:dict, path):
+    def initBySFF(self, sff:dict, module:[str, str]):
         """Method that initialzes state from a dict
 
         Args:
             sff (dict, optional): state from file.
         """
-        self.mod = importlib.import_module("sm", path)
+        self.mod = importlib.import_module(module[0], module[1])
         globals().update(self.mod.__dict__)
 
         self._id = sff["id"]

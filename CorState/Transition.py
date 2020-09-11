@@ -61,13 +61,13 @@ class Transition:
         """
         return self._id
 
-    def initByTFF(self, tff:dict, path):
+    def initByTFF(self, tff:dict, module:[str, str]):
         """Method that initialzes transition from a dict
 
         Args:
             tff (dict, optional): transition from file.
         """
-        mod = importlib.import_module("sm", path)
+        self.mod = importlib.import_module(module[0], module[1])
         globals().update(mod.__dict__)
 
         self._id = tff["id"]

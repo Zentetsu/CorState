@@ -36,7 +36,7 @@ HISTORY:
 '''
 
 
-# from context import State, Transition, StateMachine
+from context import State, Transition, StateMachine
 from CorState.State import State
 from CorState.Transition import Transition
 from CorState.StateMachine import StateMachine
@@ -65,8 +65,8 @@ def test_createStateMachineInstance():
     print("Create StateMachine Instance:", end=" ")
     try:
         sm = StateMachine("test")
+        assert sm.getName() == "test"
         print("SUCCESSED")
-        assert True
     except:
         print("FAILED")
         assert False
@@ -77,8 +77,8 @@ def test_addStateToSM():
         sm = StateMachine("test")
         s = State()
         sm.addState(s)
+        assert len(sm.getStates()) == 1
         print("SUCCESSED")
-        assert True
     except:
         print("FAILED")
         assert False
@@ -90,8 +90,8 @@ def test_addTransitionToSM():
         t = Transition()
         t.setInOutID(None, 0)
         sm.addTransition(t)
+        assert len(sm.getTransitions()) == 1
         print("SUCCESSED")
-        assert True
     except:
         print("FAILED")
         assert False
@@ -108,8 +108,8 @@ def test_simpleSM():
         sm.addState(s)
         sm.addTransition(t1)
         sm.addTransition(t2)
+        assert len(sm.getStates()) == 1 and len(sm.getTransitions()) == 2
         print("SUCCESSED")
-        assert True
     except:
         print("FAILED")
         assert False
@@ -135,6 +135,7 @@ def test_runSimpleSM():
         sm.addState(s)
         sm.addTransition(t1)
         sm.addTransition(t2)
+        assert len(sm.getStates()) == 1 and len(sm.getTransitions()) == 2
         sm.start()
         print("SUCCESSED")
         assert True
@@ -146,7 +147,7 @@ def test_loadJSONFile():
     print("load JSON file:", end=" ")
     try:
         sm = StateMachine("test")
-        sm.loadJSON("../tests/test.json")
+        sm.loadJSON("./tests/test.json")
         sm.start()
         print("SUCCESSED")
         assert True

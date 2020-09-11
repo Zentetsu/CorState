@@ -54,6 +54,14 @@ class StateMachine:
 
         self._data = None
 
+    def getName(self) -> str:
+        """Method that returns StateMachine name
+
+        Returns:
+            str: StateMachine name
+        """
+        return self._name
+
     def start(self):
         """Method that launches the state StateMachine
         """
@@ -119,6 +127,9 @@ class StateMachine:
         """
         del self._transitions[transition_id]
 
+    def getTransitions(self):
+        return self._transitions
+
     def _checkStateMachineIntegrity(self):
         """Method that checks the integrity of the StateMachine
         """
@@ -131,7 +142,7 @@ class StateMachine:
     def _checkJSONIntegrity(self):
         """Method that checks the JSON file integrity
         """
-        if not all([k in self._data.keys() for k in ["path", "StateMachine"]]):
+        if not all([k in self._data.keys() for k in ["module_name", "path", "StateMachine"]]):
             print("ERROR")
 
         if not all([k in self._data["StateMachine"].keys() for k in ["Variable", "State", "Transition"]]):
@@ -161,13 +172,13 @@ class StateMachine:
             if True not in ["def " + self._data["StateMachine"]["State"][s]["action"] in l for l in lines]:
                 file_sm.write("def " + self._data["StateMachine"]["State"][s]["action"] +"():\n\t#TODO\n\tpass\n\n")
 
-            self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
+            self.addState(self._data["StateMachine"]["State"][s], [self._data["module_name"], self._data["path"]])
 
         for t in self._data["StateMachine"]["Transition"].keys():
             if True not in ["def " + self._data["StateMachine"]["Transition"][t]["evaluation"] in l for l in lines]:
                 file_sm.write("def " + self._data["StateMachine"]["Transition"][t]["evaluation"] +"():\n\t#TODO\n\tpass\n\n")
 
-            self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
+            self.addTransition(self._data["StateMachine"]["Transition"][t], [self._data["module_name"], self._data["path"]])
 
         file_sm.close()
 
