@@ -31,12 +31,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-11	Zen	Updating import module
 2020-09-10	Zen	Refactoring the State structure
 '''
 
 
 from .CorStateError import *
-import importlib
+import os
 
 
 class State:
@@ -66,11 +67,19 @@ class State:
         Args:
             sff (dict, optional): state from file.
         """
-        self.mod = importlib.import_module(module[0], module[1])
-        globals().update(self.mod.__dict__)
+        module_dir, module_file = os.path.split(module[1])
+        module_name, module_ext = os.path.splitext(module_file)
+        # save_cwd = os.getcwd()
+        # os.chdir(module_dir)
+        module_obj = __import__(module_name)
+        module_obj.__file__ = module[1]
+        globals()[module_name] = module_obj
+        # os.chdir(save_cwd)
+        # self.mod = importlib.import_module(module[0], module[1])
+        # globals().update(self.mod.__dict__)
 
         self._id = sff["id"]
-        self._action = getattr(self.mod, sff["action"])
+        self._action = getattr(module_obj, sff["action"])
 
     def addAction(self, action):
         """Method that adds action to this state

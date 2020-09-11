@@ -27,5 +27,5 @@ def ft3():
 	#TODO
 	pass
 	# print("ft3")
-	return True
+	return v2
 
