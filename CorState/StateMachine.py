@@ -31,15 +31,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-12	Zen	Updating some comments
 2020-09-10	Zen	Generating StateMachine from JSON file
 2020-09-10	Zen	Refactoring the StateMachine structure
 '''
 
 
-import json
 import os
+import json
 from .State import State
 from .Transition import Transition
+from .CorStateError import *
 
 
 class StateMachine:
@@ -84,6 +86,13 @@ class StateMachine:
 
     def addState(self, value=None, path:str=None):
         """Method that adds a state to the StateMachine
+
+        Args:
+            value ([type], optional): Value that will initialize a new State. Defaults to None.
+            path (str, optional): Path to the called function for the StateMachine. Defaults to None.
+
+        Raises:
+            SMAddingStateError: raise an error when the value can't be casted into a State
         """
         if type(value) is dict:
             _state = State()
@@ -94,20 +103,35 @@ class StateMachine:
             _state = State()
             _state.addAction(value)
         else:
-            print("ERROR")
+            raise SMAddingStateError
 
         self._states[_state.getID()] = _state
 
     def removeState(self, state_id:int):
         """Method which removes a state from the StateMachine
+
+        Args:
+            state_id (int): state id
         """
         del self._states[state_id]
 
     def getStates(self):
+        """Method that returns States dict
+
+        Returns:
+            dict: States dict
+        """
         return self._states
 
     def addTransition(self, value=None, path:str=None):
-        """Method that adds a Transition to the TransitionMachine
+        """Method that adds a transition to the StateMachine
+
+        Args:
+            value ([type], optional): Value that will initialize a new Transition. Defaults to None.
+            path (str, optional): Path to the called function for the StateMachine. Defaults to None.
+
+        Raises:
+            SMAddingStateError: raise an error when the value can't be casted into a Transition
         """
         if type(value) is dict:
             _transition = Transition()
@@ -118,48 +142,64 @@ class StateMachine:
             _transition = Transition()
             _transition.addEvaluation(value)
         else:
-            print("ERROR")
+            raise SMAddingTransitionError
 
         self._transitions[_transition.getID()] = _transition
 
     def removeTransition(self, transition_id:int):
         """Method which removes a Transition from the Transition Machine
+
+        Args:
+            transition_id (int): Transition id
         """
         del self._transitions[transition_id]
 
     def getTransitions(self):
+        """Method that returns Transitions dict
+
+        Returns:
+            [type]: Transition dict
+        """
         return self._transitions
 
     def _checkStateMachineIntegrity(self):
         """Method that checks the integrity of the StateMachine
         """
         if [self._transitions[t].getInOutID()[0] == -1 and self._transitions[t].getInOutID()[1] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
-            print("ERROR")
+            raise SMIntegrityError("Initial")
 
         if [self._transitions[t].getInOutID()[1] == -2 and self._transitions[t].getInOutID()[0] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
-            print("ERROR")
+            raise SMIntegrityError("Final")
 
     def _checkJSONIntegrity(self):
         """Method that checks the JSON file integrity
+
+        Raises:
+            SMJSONIntegrityError: raise an error when an element is not present into the JSON file
         """
         if not all([k in self._data.keys() for k in ["module_name", "path", "StateMachine"]]):
-            print("ERROR")
+            raise SMJSONIntegrityError("module_name, path and/or StateMachine values of JSON file")
 
         if not all([k in self._data["StateMachine"].keys() for k in ["Variable", "State", "Transition"]]):
-            print("ERROR")
+            raise SMJSONIntegrityError("Variable, State and/or Transition values of StateMachine")
 
         if len(self._data["StateMachine"]["State"].keys()) > 0 and not all([k in self._data["StateMachine"]["State"][s].keys() for k in ["id", "action"] for s in self._data["StateMachine"]["State"].keys()]):
-            print("ERROR")
+            raise SMJSONIntegrityError("id and/or action values of a specific State")
 
         if not all([t in self._data["StateMachine"]["Transition"].keys() for t in ["in", "out"]]):
-            print("ERROR")
+            raise SMJSONIntegrityError("in and/or out values of Transition")
 
         if not all([k in self._data["StateMachine"]["Transition"][t].keys() for k in ["id_in", "id_out", "evaluation"] for t in self._data["StateMachine"]["Transition"].keys()]):
-            print("ERROR")
+            raise SMJSONIntegrityError("id_in, id_out and/or evaluation of a specific Transition")
 
     def _generateStateMachineStructure(self):
+        """Method that generates StateMachien structure
+
+        Raises:
+            FileNotFoundError: raise an error the file leading to the functions definition doesn't exist
+        """
         if not os.path.isfile(self._data["path"]):
-            print("ERROR")
+            raise FileNotFoundError
 
         file_sm = open(self._data["path"], "r+")
         lines = file_sm.readlines()
@@ -182,7 +222,6 @@ class StateMachine:
 
         file_sm.close()
 
-
     def loadJSON(self, path:str):
         """Method that loads JSON file
         """
@@ -193,7 +232,7 @@ class StateMachine:
         self._checkJSONIntegrity()
         self._generateStateMachineStructure()
 
-    def dumpJSON(self, name:str):
+    def _dumpJSON(self, name:str):
         """Method that saves StateMachine  to a JSON file
         """
         pass

@@ -3,10 +3,11 @@ Lightweight and versatile State Machine library
 
 ### Features
 * State Machine implementation
+
+### Ongoing
 * Load structure from JSON file
 
 ### Future improvement
-
 * Petry Net implementation
 * GUI editor
 

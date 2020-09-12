@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-12	Zen	Updating some comments
 2020-09-11	Zen	Updating import module
 2020-09-10	Zen	Refactoring the State structure
 '''
@@ -62,10 +63,11 @@ class State:
         return self._id
 
     def initBySFF(self, sff:dict, module:[str, str]):
-        """Method that initialzes state from a dict
+        """Method that initialzes a State from a JSON file
 
         Args:
-            sff (dict, optional): state from file.
+            sff (dict): state from file
+            module ([type]): module information
         """
         module_dir, module_file = os.path.split(module[1])
         module_name, module_ext = os.path.splitext(module_file)

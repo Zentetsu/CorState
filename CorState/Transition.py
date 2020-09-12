@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-12	Zen	Updating some comments
 2020-09-11	Zen	Updating import module
 2020-09-10	Zen	Refactoring the Transition structure
 '''
@@ -63,10 +64,11 @@ class Transition:
         return self._id
 
     def initByTFF(self, tff:dict, module:[str, str]):
-        """Method that initialzes transition from a dict
+        """Method that initialzes a Transition from a JSON file
 
         Args:
-            tff (dict, optional): transition from file.
+            tff (dict): state from file
+            module ([type]): module information
         """
         module_dir, module_file = os.path.split(module[1])
         module_name, module_ext = os.path.splitext(module_file)
