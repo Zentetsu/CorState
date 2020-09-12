@@ -1,6 +1,6 @@
 {
     "module_name": "sm",
-    "path": "./tests/sm.py",
+    "path": "./CorState/tests/sm.py",
     "StateMachine": {
         "Variable": {
             "v1": 0,
