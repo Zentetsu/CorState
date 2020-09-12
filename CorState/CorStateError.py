@@ -96,3 +96,33 @@ class SMJSONIntegrityError(Exception):
         """
         self.message = more + message
         super().__init__(self.message)
+
+class SMExtensionName(Exception):
+    """Class focused on catching wrong extension file
+
+    Args:
+        Exception (Exception): Exception
+    """
+    def __init__(self, message="File must be python file."):
+        """Class constructor
+
+        Args:
+            message (str, optional): message. Defaults to "File must be python file.".
+        """
+        self.message = message
+        super().__init__(self.message)
+
+class SMRelativePathFile(Exception):
+    """Class focused on catching when file path is not realtive
+
+    Args:
+        Exception (Exception): Exception
+    """
+    def __init__(self, message="Python path file must be relative."):
+        """Class constructor
+
+        Args:
+            message (str, optional): message. Defaults to "Python path file must be relative.".
+        """
+        self.message = message
+        super().__init__(self.message)

@@ -35,4 +35,5 @@ HISTORY:
 
 
 from .State import State
-from .Machine import Machine
+from .Transition import Transition
+from .StateMachine import StateMachine

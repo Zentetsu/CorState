@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-12	Zen	Updating init by JSON file
 2020-09-12	Zen	Updating some comments
 2020-09-10	Zen	Generating StateMachine from JSON file
 2020-09-10	Zen	Refactoring the StateMachine structure
@@ -177,7 +178,7 @@ class StateMachine:
         Raises:
             SMJSONIntegrityError: raise an error when an element is not present into the JSON file
         """
-        if not all([k in self._data.keys() for k in ["module_name", "path", "StateMachine"]]):
+        if not all([k in self._data.keys() for k in ["path", "StateMachine"]]):
             raise SMJSONIntegrityError("module_name, path and/or StateMachine values of JSON file")
 
         if not all([k in self._data["StateMachine"].keys() for k in ["Variable", "State", "Transition"]]):
@@ -212,13 +213,13 @@ class StateMachine:
             if True not in ["def " + self._data["StateMachine"]["State"][s]["action"] in l for l in lines]:
                 file_sm.write("def " + self._data["StateMachine"]["State"][s]["action"] +"():\n\t#TODO\n\tpass\n\n")
 
-            self.addState(self._data["StateMachine"]["State"][s], [self._data["module_name"], self._data["path"]])
+            self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
 
         for t in self._data["StateMachine"]["Transition"].keys():
             if True not in ["def " + self._data["StateMachine"]["Transition"][t]["evaluation"] in l for l in lines]:
                 file_sm.write("def " + self._data["StateMachine"]["Transition"][t]["evaluation"] +"():\n\t#TODO\n\tpass\n\n")
 
-            self.addTransition(self._data["StateMachine"]["Transition"][t], [self._data["module_name"], self._data["path"]])
+            self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
 
         file_sm.close()
 

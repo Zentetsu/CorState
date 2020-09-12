@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-12	Zen	Adding test for JSON file
 2020-09-10	Zen	Adding test to load and run StateMachine from JSON file
 2020-09-10	Zen	Adding test to check if the StateMachine works with a single state
 '''
@@ -143,17 +144,17 @@ def test_runSimpleSM():
         print("FAILED")
         assert False
 
-# def test_loadJSONFile():
-#     print("load JSON file:", end=" ")
-#     try:
-#         sm = StateMachine("test")
-#         sm.loadJSON("./tests/test.json")
-#         sm.start()
-#         print("SUCCESSED")
-#         assert True
-#     except:
-#         print("FAILED")
-#         assert False
+def test_loadJSONFile():
+    print("load JSON file:", end=" ")
+    try:
+        sm = StateMachine("test")
+        sm.loadJSON("./tests/test.json")
+        sm.start()
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
 
 print("-"*10)
 test_createStateInstance()
@@ -163,5 +164,5 @@ test_addStateToSM()
 test_addTransitionToSM()
 test_simpleSM()
 test_runSimpleSM()
-# test_loadJSONFile()
+test_loadJSONFile()
 print("-"*10)

@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-12	Zen	Updating init by JSON file
 2020-09-12	Zen	Updating some comments
 2020-09-11	Zen	Updating import module
 2020-09-10	Zen	Refactoring the Transition structure
@@ -38,7 +39,7 @@ HISTORY:
 
 
 from .CorStateError import *
-import os
+import importlib
 
 
 class Transition:
@@ -63,27 +64,31 @@ class Transition:
         """
         return self._id
 
-    def initByTFF(self, tff:dict, module:[str, str]):
+    def initByTFF(self, tff:dict, module:str):
         """Method that initialzes a Transition from a JSON file
 
         Args:
             tff (dict): state from file
-            module ([type]): module information
+            module (str): module information
         """
-        module_dir, module_file = os.path.split(module[1])
-        module_name, module_ext = os.path.splitext(module_file)
-        # save_cwd = os.getcwd()
-        # os.chdir(module_dir)
-        module_obj = __import__(module_name)
-        module_obj.__file__ = module[1]
-        globals()[module_name] = module_obj
-        # os.chdir(save_cwd)
-        # self.mod = importlib.import_module(module[0], module[1])
-        # globals().update(mod.__dict__)
+        module_name = module
+
+        if module_name[len(module_name)-3:] != ".py":
+            print("ERROR")
+
+        if module_name[:2] != "./":
+            print("ERROR")
+
+        module_name = module_name[2:]
+        module_name = module_name[:len(module_name)-3]
+        module_name = module_name.replace('/', '.')
+
+        self.mod = importlib.import_module(module_name, module)
+        globals().update(self.mod.__dict__)
 
         self._id = tff["id"]
         self._ioID = (tff["id_in"], tff["id_out"])
-        self._evaluation = getattr(module_obj, tff["evaluation"])
+        self._evaluation = getattr(self.mod, tff["evaluation"])
 
     def setInOutID(self, ini:int, outi:int):
         """Method that initializes the in and out state id
