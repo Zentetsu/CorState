@@ -143,17 +143,17 @@ def test_runSimpleSM():
         print("FAILED")
         assert False
 
-def test_loadJSONFile():
-    print("load JSON file:", end=" ")
-    try:
-        sm = StateMachine("test")
-        sm.loadJSON("./tests/test.json")
-        sm.start()
-        print("SUCCESSED")
-        assert True
-    except:
-        print("FAILED")
-        assert False
+# def test_loadJSONFile():
+#     print("load JSON file:", end=" ")
+#     try:
+#         sm = StateMachine("test")
+#         sm.loadJSON("./tests/test.json")
+#         sm.start()
+#         print("SUCCESSED")
+#         assert True
+#     except:
+#         print("FAILED")
+#         assert False
 
 print("-"*10)
 test_createStateInstance()
