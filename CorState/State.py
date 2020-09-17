@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-17	Zen	Adding encapsulated state
 2020-09-12	Zen	Updating init by JSON file
 2020-09-12	Zen	Updating some comments
 2020-09-11	Zen	Updating import module
@@ -54,6 +55,7 @@ class State:
         State._nb_state = State._nb_state + 1
 
         self._action = None
+        self._encapsulation = False
 
     def getID(self) -> int:
         """Method that returns State ID
@@ -88,6 +90,7 @@ class State:
 
         self._id = sff["id"]
         self._action = getattr(self.mod, sff["action"])
+        self._encapsulation = sff['encapsulation']
 
     def addAction(self, action):
         """Method that adds action to this state
@@ -101,6 +104,12 @@ class State:
         """Method that will run the action defined to this state
         """
         self._action()
+
+    def setEncapsulation(self, value:bool):
+        self._encapsulation = value
+
+    def getEncapsulation(self) -> bool:
+        return self._encapsulation
 
     def __repr__(self) -> str:
         """Redefined method to print value of the State class instance

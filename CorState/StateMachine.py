@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-17	Zen	Adding encapsulated state
 2020-09-12	Zen	Updating init by JSON file
 2020-09-12	Zen	Updating some comments
 2020-09-10	Zen	Generating StateMachine from JSON file
@@ -40,6 +41,7 @@ HISTORY:
 
 import os
 import json
+from math import inf
 from .State import State
 from .Transition import Transition
 from .CorStateError import *
@@ -54,6 +56,7 @@ class StateMachine:
         self._name = name
         self._states = {}
         self._transitions = {}
+        self._states_stack = []
 
         self._data = None
 
@@ -70,8 +73,9 @@ class StateMachine:
         """
         self._checkStateMachineIntegrity()
 
-        _stateID = -1
+        _stateID = -100
         _breaked = True
+        _next_transition = False
 
         while _breaked:
             _breaked = False
@@ -79,11 +83,30 @@ class StateMachine:
             for tr in self._transitions.keys():
                 if self._transitions[tr].getInOutID()[0] == _stateID and self._transitions[tr].evaluate():
                     _stateID = self._transitions[tr].getInOutID()[1]
+
+                    if len(self._states_stack) > 0 and -_stateID in self._states_stack:
+                        while len(self._states_stack) > 0:
+                            if self._states_stack[-1] != -_stateID:
+                                del self._states_stack[-1]
+                            else:
+                                break
+
+                        del self._states_stack[-1]
+                        _next_transition = True
+
                     _breaked = True
                     break
 
-            if _breaked and _stateID != -2:
+            if _breaked and _stateID != -200 and not _next_transition:
+                if self._states[_stateID].getEncapsulation():
+                    self._states_stack.append(_stateID)
+
                 self._states[_stateID].run()
+            elif _next_transition:
+                _next_transition = False
+
+        if _stateID != -200:
+            print("ERROR")
 
     def addState(self, value=None, path:str=None):
         """Method that adds a state to the StateMachine
@@ -166,10 +189,10 @@ class StateMachine:
     def _checkStateMachineIntegrity(self):
         """Method that checks the integrity of the StateMachine
         """
-        if [self._transitions[t].getInOutID()[0] == -1 and self._transitions[t].getInOutID()[1] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+        if [self._transitions[t].getInOutID()[0] == -100 and self._transitions[t].getInOutID()[1] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
             raise SMIntegrityError("Initial")
 
-        if [self._transitions[t].getInOutID()[1] == -2 and self._transitions[t].getInOutID()[0] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+        if [self._transitions[t].getInOutID()[1] == -200 and self._transitions[t].getInOutID()[0] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
             raise SMIntegrityError("Final")
 
     def _checkJSONIntegrity(self):
@@ -184,7 +207,7 @@ class StateMachine:
         if not all([k in self._data["StateMachine"].keys() for k in ["Variable", "State", "Transition"]]):
             raise SMJSONIntegrityError("Variable, State and/or Transition values of StateMachine")
 
-        if len(self._data["StateMachine"]["State"].keys()) > 0 and not all([k in self._data["StateMachine"]["State"][s].keys() for k in ["id", "action"] for s in self._data["StateMachine"]["State"].keys()]):
+        if len(self._data["StateMachine"]["State"].keys()) > 0 and not all([k in self._data["StateMachine"]["State"][s].keys() for k in ["id", "action", "encapsulation"] for s in self._data["StateMachine"]["State"].keys()]):
             raise SMJSONIntegrityError("id and/or action values of a specific State")
 
         if not all([t in self._data["StateMachine"]["Transition"].keys() for t in ["in", "out"]]):
@@ -213,15 +236,21 @@ class StateMachine:
             if True not in ["def " + self._data["StateMachine"]["State"][s]["action"] in l for l in lines]:
                 file_sm.write("def " + self._data["StateMachine"]["State"][s]["action"] +"():\n\t#TODO\n\tpass\n\n")
 
-            self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
+            # self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
 
         for t in self._data["StateMachine"]["Transition"].keys():
             if True not in ["def " + self._data["StateMachine"]["Transition"][t]["evaluation"] in l for l in lines]:
                 file_sm.write("def " + self._data["StateMachine"]["Transition"][t]["evaluation"] +"():\n\t#TODO\n\tpass\n\n")
 
-            self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
+            # self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
 
         file_sm.close()
+
+        for s in self._data["StateMachine"]["State"].keys():
+            self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
+
+        for t in self._data["StateMachine"]["Transition"].keys():
+            self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
 
     def loadJSON(self, path:str):
         """Method that loads JSON file

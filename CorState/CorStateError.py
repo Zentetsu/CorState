@@ -71,7 +71,7 @@ class SMIntegrityError(Exception):
     Args:
         Exception (Exception): Exception
     """
-    def __init__(self, more:str, message=" transition missing or ont assigned to a State."):
+    def __init__(self, more:str, message=" transition missing or not assigned to a State."):
         """Class constructor
 
         Args:

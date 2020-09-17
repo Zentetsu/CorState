@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-17	Zen	Adding test for encapsulated state
 2020-09-12	Zen	Adding test for JSON file
 2020-09-10	Zen	Adding test to load and run StateMachine from JSON file
 2020-09-10	Zen	Adding test to check if the StateMachine works with a single state
@@ -128,10 +129,10 @@ def test_runSimpleSM():
         s = State()
         s.addAction(act)
         t1 = Transition()
-        t1.setInOutID(-1, s.getID())
+        t1.setInOutID(-100, s.getID())
         t1.addEvaluation(ev)
         t2 = Transition()
-        t2.setInOutID(s.getID(), -2)
+        t2.setInOutID(s.getID(), -200)
         t2.addEvaluation(ev)
         sm.addState(s)
         sm.addTransition(t1)
@@ -156,6 +157,18 @@ def test_loadJSONFile():
         print("FAILED")
         assert False
 
+def test_runEncSM():
+    print("Run Encapsuled StateMachine:", end=" ")
+    try:
+        sm = StateMachine("test2")
+        sm.loadJSON("./tests/test2.json")
+        sm.start()
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
 print("-"*10)
 test_createStateInstance()
 test_createTransitionInstance()
@@ -165,4 +178,5 @@ test_addTransitionToSM()
 test_simpleSM()
 test_runSimpleSM()
 test_loadJSONFile()
+test_runEncSM()
 print("-"*10)

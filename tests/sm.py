@@ -27,5 +27,9 @@ def ft3():
 	#TODO
 	pass
 	# print("ft3")
-	return v2
+	return not v2
+
+def fa3():
+	#TODO
+	pass
 

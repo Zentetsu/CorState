@@ -1,5 +1,5 @@
 {
-    "path": "./tests/sm.py",
+    "path": "./tests/sm2.py",
     "StateMachine": {
         "Variable": {
             "v1": 0,
@@ -14,6 +14,16 @@
             "s1": {
                 "id": 1,
                 "action": "fa2",
+                "encapsulation": true
+            },
+            "s3": {
+                "id": 2,
+                "action": "fa3",
+                "encapsulation": false
+            },
+            "s4": {
+                "id": 3,
+                "action": "fa4",
                 "encapsulation": false
             }
         },
@@ -26,7 +36,7 @@
             },
             "out": {
                 "id": 1,
-                "id_in": 1,
+                "id_in": 3,
                 "id_out": -200,
                 "evaluation": "ft2"
             },
@@ -35,6 +45,24 @@
                 "id_in": 0,
                 "id_out": 1,
                 "evaluation": "ft3"
+            },
+            "t1": {
+                "id": 3,
+                "id_in": 1,
+                "id_out": 2,
+                "evaluation": "ft4"
+            },
+            "t2": {
+                "id": 4,
+                "id_in": 2,
+                "id_out": -1,
+                "evaluation": "ft4"
+            },
+            "t3": {
+                "id": 5,
+                "id_in": -1,
+                "id_out": 3,
+                "evaluation": "ft5"
             }
         }
     }
