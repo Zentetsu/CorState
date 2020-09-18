@@ -30,14 +30,14 @@
         "Transition": {
             "in": {
                 "id": 0,
-                "id_in": -100,
+                "id_in": "inf",
                 "id_out": 0,
                 "evaluation": "ft1"
             },
             "out": {
                 "id": 1,
                 "id_in": 3,
-                "id_out": -200,
+                "id_out": "inf",
                 "evaluation": "ft2"
             },
             "t0": {

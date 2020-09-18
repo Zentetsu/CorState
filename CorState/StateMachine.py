@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-18	Zen	Using inf value for first and last transition
 2020-09-17	Zen	Adding encapsulated state
 2020-09-12	Zen	Updating init by JSON file
 2020-09-12	Zen	Updating some comments
@@ -73,7 +74,7 @@ class StateMachine:
         """
         self._checkStateMachineIntegrity()
 
-        _stateID = -100
+        _stateID = inf
         _breaked = True
         _next_transition = False
 
@@ -97,7 +98,7 @@ class StateMachine:
                     _breaked = True
                     break
 
-            if _breaked and _stateID != -200 and not _next_transition:
+            if _breaked and _stateID != -inf and not _next_transition:
                 if self._states[_stateID].getEncapsulation():
                     self._states_stack.append(_stateID)
 
@@ -105,7 +106,7 @@ class StateMachine:
             elif _next_transition:
                 _next_transition = False
 
-        if _stateID != -200:
+        if _stateID != -inf:
             print("ERROR")
 
     def addState(self, value=None, path:str=None):
@@ -189,10 +190,10 @@ class StateMachine:
     def _checkStateMachineIntegrity(self):
         """Method that checks the integrity of the StateMachine
         """
-        if [self._transitions[t].getInOutID()[0] == -100 and self._transitions[t].getInOutID()[1] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+        if [self._transitions[t].getInOutID()[0] == inf and self._transitions[t].getInOutID()[1] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
             raise SMIntegrityError("Initial")
 
-        if [self._transitions[t].getInOutID()[1] == -200 and self._transitions[t].getInOutID()[0] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+        if [self._transitions[t].getInOutID()[1] == -inf and self._transitions[t].getInOutID()[0] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
             raise SMIntegrityError("Final")
 
     def _checkJSONIntegrity(self):

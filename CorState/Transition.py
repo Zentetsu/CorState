@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-09-18	Zen	Catching inf value
 2020-09-12	Zen	Updating init by JSON file
 2020-09-12	Zen	Updating some comments
 2020-09-11	Zen	Updating import module
@@ -39,6 +40,7 @@ HISTORY:
 
 
 from .CorStateError import *
+from math import inf
 import importlib
 
 
@@ -87,7 +89,14 @@ class Transition:
         globals().update(self.mod.__dict__)
 
         self._id = tff["id"]
-        self._ioID = (tff["id_in"], tff["id_out"])
+
+        if tff["id_in"] == "inf":
+            self._ioID = (inf, tff["id_out"])
+        elif tff["id_out"] == "inf":
+            self._ioID = (tff["id_in"], -inf)
+        else:
+            self._ioID = (tff["id_in"], tff["id_out"])
+
         self._evaluation = getattr(self.mod, tff["evaluation"])
 
     def setInOutID(self, ini:int, outi:int):

@@ -38,10 +38,11 @@ HISTORY:
 '''
 
 
-# from context import State, Transition, StateMachine
+from context import State, Transition, StateMachine
 from CorState.State import State
 from CorState.Transition import Transition
 from CorState.StateMachine import StateMachine
+from math import inf
 
 def test_createStateInstance():
     print("Create State Instance:", end=" ")
@@ -129,10 +130,10 @@ def test_runSimpleSM():
         s = State()
         s.addAction(act)
         t1 = Transition()
-        t1.setInOutID(-100, s.getID())
+        t1.setInOutID(inf, s.getID())
         t1.addEvaluation(ev)
         t2 = Transition()
-        t2.setInOutID(s.getID(), -200)
+        t2.setInOutID(s.getID(), -inf)
         t2.addEvaluation(ev)
         sm.addState(s)
         sm.addTransition(t1)
