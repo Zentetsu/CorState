@@ -1,0 +1,10 @@
+.buttons {
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-bottom: 15px;
+	display: block;
+}
+canvas {
+    border: 1px solid #ccc;
+	margin: auto;
+}

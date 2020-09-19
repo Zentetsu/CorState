@@ -6,10 +6,10 @@ Lightweight and versatile State Machine library
 
 ### Ongoing
 * Load structure from JSON file
+* GUI editor
 
 ### Future improvement
 * Petry Net implementation
-* GUI editor
 
 
 ### More
