@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-09-22	Zen	Adding wavepoint
  * 2020-09-21	Zen	Adding editable name for state and transition
  */
 
@@ -41,11 +42,19 @@ var canvasWidth =  window.innerWidth * 0.98;
 var canvasHeight = window.innerHeight * 0.95;
 var unitScale = 10;
 var grid = 15;
+var ID_transition = 0;
+var ID_state = 0;
 
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 canvas.setWidth(canvasWidth);
 canvas.setHeight(canvasHeight);
+
+document.getElementById("rename").readOnly = true;
+
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
 // Create GRID
 for (var i = 0; i < (canvasWidth / grid); i++) {
@@ -88,6 +97,7 @@ canvas.on('object:moving', function(options) {
 
         if(options.target.part === 'in') {
             p.line && p.line.set({ 'x1': Math.round(p.left / grid) * grid, 'y1': Math.round(p.top / grid) * grid});
+            p.line2 && p.line2.set({ 'x2': Math.round(p.left / grid) * grid, 'y2': Math.round(p.top / grid) * grid});
             aa = calcArrowAngle(p.line.get('x1'), p.line.get('y1'), p.line.get('x2'), p.line.get('y2'));
 
             p.line.arrow.set({
@@ -166,6 +176,7 @@ canvas.on('selection:updated', function(options) {
 
 canvas.on('selection:cleared', function(options) {
     document.getElementById("rename").value = "";
+    document.getElementById("rename").readOnly = true;
 });
 
 // Adding State to the GRID
@@ -186,7 +197,7 @@ function addState() {
         originY: 'top',
         rx: 5,
         ry: 5,
-        id: id,
+        id: ID_state,
         hasControls: true,
         hasRotatingPoint: false,
         lockRotation: true
@@ -200,6 +211,7 @@ function addState() {
         fontSize: 15,
         originX: 'center',
         originY: 'center',
+        id: ID_state,
         selectable: false,
         hasBorders: false,
         hasControls: false,
@@ -215,13 +227,14 @@ function addState() {
     group.text = text;
 
     canvas.add(group);
+
+    ID_state++;
 }
 
 // Adding a Transition to the GRID
 function addTransition() {
     //TODO add ID
     id = 0;
-    console.log("here");
 
     var circle = new fabric.Circle({
         left: 60,
@@ -230,6 +243,7 @@ function addTransition() {
         stroke: '#666',
         strokeWidth: 4,
         radius: 4,
+        id: ID_transition,
         hasBorders: false,
         hasControls: false,
         type: 'transition',
@@ -243,7 +257,8 @@ function addTransition() {
         fill: '',
         stroke: '#666',
         strokeWidth: 2,
-        selectable: true,
+        id: ID_transition,
+        selectable: false,
         hasBorders: false,
         hasControls: false,
         hasBorders: false,
@@ -254,7 +269,8 @@ function addTransition() {
         lockMovementX: true,
         lockMovementY: true,
         type: 'transition',
-        part: 'segment'
+        part: 'segment',
+        next: null,
     });
 
     var text = new fabric.Text('function', {
@@ -263,7 +279,8 @@ function addTransition() {
         fontSize: 15,
         originX: 'center',
         originY: 'center',
-        selectable: true,
+        id: ID_transition,
+        selectable: false,
         hasBorders: false,
         hasControls: false,
         lockScalingX: true,
@@ -290,6 +307,7 @@ function addTransition() {
         width: 15,
         height: 15,
         fill: '#666',
+        id: ID_transition,
         hasBorders: false,
         hasControls: false,
         lockScalingX: true,
@@ -304,7 +322,8 @@ function addTransition() {
     line.text = text;
 
     circle.line = line;
-    circle.arrow= arrow;
+    circle.line2 = null;
+    circle.arrow = arrow;
     circle.text = text;
 
     arrow.line = line;
@@ -314,6 +333,8 @@ function addTransition() {
     text.line = line;
 
     canvas.add(line, circle, arrow, text);
+
+    ID_transition++;
 }
 
 function deleteList(listItems) {
@@ -333,6 +354,26 @@ function deleteList(listItems) {
         for(var i = 0; i < len; i+= 1) {
             canvas.remove(list[i]);
         }
+    }
+}
+
+function deleteID(ID, type) {
+    var listItems = canvas.getObjects();
+    var len = listItems.length;
+    var list = []
+
+    for(var i = 0; i < len; i+= 1) {
+        var item = listItems[i];
+
+        if(item.type === type && item.id === ID) {
+            list.push(item);
+        }
+    }
+
+    len = list.length;
+
+    for(var i = 0; i < len; i+= 1) {
+        canvas.remove(list[i]);
     }
 }
 
@@ -359,22 +400,7 @@ document.addEventListener('keydown', function(event) {
         if(activeObject !== null && activeObject.type === "state") {
             canvas.remove(activeObject);
         } else if(activeObject !== null && activeObject.type === "transition") {
-            if(activeObject.part === "in") {
-                canvas.remove(activeObject.text);
-                canvas.remove(activeObject.line);
-                canvas.remove(activeObject.arrow);
-                canvas.remove(activeObject);
-            } else if(activeObject.part === "out") {
-                canvas.remove(activeObject.text);
-                canvas.remove(activeObject.line);
-                canvas.remove(activeObject.circle);
-                canvas.remove(activeObject);
-            } else {
-                canvas.remove(activeObject.text);
-                canvas.remove(activeObject.arrow);
-                canvas.remove(activeObject.circle);
-                canvas.remove(activeObject);
-            }
+            deleteID(activeObject.id, "transition");
         }
     } else if(keyPressed === 13) {
         var activeObject = canvas.getActiveObject();
@@ -384,7 +410,87 @@ document.addEventListener('keydown', function(event) {
             } else {
                 activeObject.text.set('text', document.getElementById("rename").value);
             }
-            document.getElementById("rename").value = "";
+            // document.getElementById("rename").value = "";
+            document.getElementById("rename").readOnly = true;
+            canvas.renderAll();
+        }
+    } else if(keyPressed === 82) {
+        var activeObject = canvas.getActiveObject();
+        console.log(activeObject);
+        if(activeObject !== undefined && activeObject !== null) {
+            sleep(100).then(() => {
+                document.getElementById("rename").readOnly = false;
+                document.getElementById("rename").focus();
+            })
+        }
+    } else if(keyPressed === 83) {
+        var activeObject = canvas.getActiveObject();
+        if(activeObject !== undefined && activeObject !== null && activeObject.type === "transition") {
+            var n_circle = new fabric.Circle({
+                left: activeObject.line.left,
+                top: activeObject.line.top,
+                fill: '#fff',
+                stroke: '#666',
+                strokeWidth: 3,
+                radius: 3,
+                hasBorders: false,
+                hasControls: false,
+                type: 'transition',
+                part: 'in'
+            });
+
+            var n_line = new fabric.Line([ n_circle.left, n_circle.top, activeObject.line.arrow.left, activeObject.line.arrow.top ], {
+                type: 'line',
+                originX: 'center',
+                originY: 'center',
+                fill: '',
+                stroke: '#666',
+                strokeWidth: 2,
+                selectable: true,
+                hasBorders: false,
+                hasControls: false,
+                hasBorders: false,
+                hasControls: false,
+                lockScalingX: true,
+                lockScalingY: true,
+                lockRotation: true,
+                lockMovementX: true,
+                lockMovementY: true,
+                type: 'transition',
+                part: 'segment'
+            });
+
+
+            if(activeObject.part === "in") {
+                arrow = activeObject.arrow;
+                circle = activeObject;
+            } else if(activeObject.part === "out") {
+                arrow = activeObject;
+                circle = activeObject.circle;
+            }
+
+            line = activeObject.line;
+
+            line.arrow = n_circle;
+            line.set({ 'x2': n_circle.left, 'y2': n_circle.top});
+
+            arrow.circle = n_circle;
+            arrow.line = n_line;
+            circle.arrow = null;
+            circle.line = line;
+
+            n_line.circle = n_circle;
+            n_line.arrow = arrow;
+            n_line.text = activeObject.text;
+            n_line.id = activeObject.id;
+
+            n_circle.line = n_line;
+            n_circle.line2 = line;
+            n_circle.arrow = arrow;
+            n_circle.text = activeObject.text;
+            n_circle.id = activeObject.id;
+
+            canvas.add(n_line, n_circle);
             canvas.renderAll();
         }
     }
