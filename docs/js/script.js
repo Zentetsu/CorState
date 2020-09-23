@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-09-23	Zen	Removing wavepoint
  * 2020-09-22	Zen	Adding wavepoint
  * 2020-09-21	Zen	Adding editable name for state and transition
  */
@@ -87,6 +88,11 @@ canvas.on('object:moving', function(options) {
             left: Math.round(options.target.left / grid) * grid,
             top: Math.round(options.target.top / grid) * grid
         });
+
+        options.target.text.set({
+            left: options.target.left + 45,
+            top: options.target.top + 45
+        });
     } else {
         var p = options.target;
 
@@ -95,7 +101,7 @@ canvas.on('object:moving', function(options) {
             top: Math.round(options.target.top / grid) * grid
         });
 
-        if(options.target.part === 'in') {
+        if(options.target.part === 'in' || options.target.part === 'c') {
             p.line && p.line.set({ 'x1': Math.round(p.left / grid) * grid, 'y1': Math.round(p.top / grid) * grid});
             p.line2 && p.line2.set({ 'x2': Math.round(p.left / grid) * grid, 'y2': Math.round(p.top / grid) * grid});
             aa = calcArrowAngle(p.line.get('x1'), p.line.get('y1'), p.line.get('x2'), p.line.get('y2'));
@@ -204,8 +210,8 @@ function addState() {
     });
 
     var text = new fabric.Text('function', {
-        left: 105,
-        top: 105,
+        left: state.left + 45,
+        top: state.top + 45,
         type: 'state',
         part: 'text',
         fontSize: 15,
@@ -220,13 +226,15 @@ function addState() {
         lockRotation: true,
       });
 
-    var group = new fabric.Group([ state, text ], {
-        type: 'state'
-    });
+    // var group = new fabric.Group([ state, text ], {
+    //     type: 'state'
+    // });
 
-    group.text = text;
+    // group.text = text;
 
-    canvas.add(group);
+    state.text = text
+
+    canvas.add(text, state);
 
     ID_state++;
 }
@@ -398,7 +406,7 @@ document.addEventListener('keydown', function(event) {
     if(keyPressed == 46) {
         var activeObject = canvas.getActiveObject();
         if(activeObject !== null && activeObject.type === "state") {
-            canvas.remove(activeObject);
+            deleteID(activeObject.id, "state");
         } else if(activeObject !== null && activeObject.type === "transition") {
             deleteID(activeObject.id, "transition");
         }
@@ -410,20 +418,20 @@ document.addEventListener('keydown', function(event) {
             } else {
                 activeObject.text.set('text', document.getElementById("rename").value);
             }
-            // document.getElementById("rename").value = "";
             document.getElementById("rename").readOnly = true;
+            document.getElementById("rename").blur();
             canvas.renderAll();
         }
-    } else if(keyPressed === 82) {
+    } else if(keyPressed === 82 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
-        console.log(activeObject);
         if(activeObject !== undefined && activeObject !== null) {
             sleep(100).then(() => {
                 document.getElementById("rename").readOnly = false;
                 document.getElementById("rename").focus();
+                document.getElementById("rename").select();
             })
         }
-    } else if(keyPressed === 83) {
+    } else if(keyPressed === 83 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
         if(activeObject !== undefined && activeObject !== null && activeObject.type === "transition") {
             var n_circle = new fabric.Circle({
@@ -436,7 +444,7 @@ document.addEventListener('keydown', function(event) {
                 hasBorders: false,
                 hasControls: false,
                 type: 'transition',
-                part: 'in'
+                part: 'c'
             });
 
             var n_line = new fabric.Line([ n_circle.left, n_circle.top, activeObject.line.arrow.left, activeObject.line.arrow.top ], {
@@ -476,7 +484,7 @@ document.addEventListener('keydown', function(event) {
 
             arrow.circle = n_circle;
             arrow.line = n_line;
-            circle.arrow = null;
+            circle.arrow = n_circle;
             circle.line = line;
 
             n_line.circle = n_circle;
@@ -492,6 +500,51 @@ document.addEventListener('keydown', function(event) {
 
             canvas.add(n_line, n_circle);
             canvas.renderAll();
+        }
+    } else if(keyPressed === 68 && document.querySelector('input:focus') === null) {
+        var activeObject = canvas.getActiveObject();
+        if(activeObject !== undefined && activeObject !== null && activeObject.type === "transition") {
+
+            if(activeObject.part === "in" && activeObject.arrow.part === "c") {
+                arrow = activeObject.arrow;
+                circle = activeObject;
+                line = activeObject.line;
+
+                n_arrow = arrow.line.arrow;
+                n_line = arrow.line;
+
+                canvas.remove(line);
+                canvas.remove(arrow);
+
+                n_line.set({ 'x1': circle.left, 'y1': circle.top});
+
+                circle.arrow = n_arrow;
+                circle.line = n_line;
+
+
+            }
+            // else if(activeObject.part === "out" && activeObject.circle.part === "c") {
+            //     arrow = activeObject;
+            //     circle = activeObject.circle;
+            //     line = activeObject.line;
+
+
+            //     n_circle = circle.line2.circle;
+            //     n_line = circle.line2;
+            //     n_line.arrow = arrow;
+
+            //     canvas.remove(line);
+            //     canvas.remove(circle);
+
+            //     n_line.set({ 'x2': arrow.left, 'y2': arrow.top});
+
+            //     arrow.circle = n_circle;
+            //     arrow.line = n_line;
+
+
+            // }
+
+            // canvas.renderAll();
         }
     }
 });
