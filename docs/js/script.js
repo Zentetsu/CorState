@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-09-23	Zen	State name position correction
  * 2020-09-23	Zen	Removing wavepoint
  * 2020-09-22	Zen	Adding wavepoint
  * 2020-09-21	Zen	Adding editable name for state and transition
@@ -59,8 +60,14 @@ const sleep = (milliseconds) => {
 
 // Create GRID
 for (var i = 0; i < (canvasWidth / grid); i++) {
-    canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type:'line', stroke: '#ccc', selectable: false }));
-    canvas.add(new fabric.Line([ 0, i * grid, canvasWidth, i * grid], { type: 'line', stroke: '#ccc', selectable: false }))
+    var color;
+    if(i === 0 || i % 4 === 0) {
+        color = '#BFBFBF';
+    } else {
+        color = '#D9D9D9'
+    }
+    canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type:'line', stroke: color, selectable: false }));
+    canvas.add(new fabric.Line([ 0, i * grid, canvasWidth, i * grid], { type: 'line', stroke: color, selectable: false }))
 }
 
 function calcArrowAngle(x1, y1, x2, y2) {
@@ -90,8 +97,8 @@ canvas.on('object:moving', function(options) {
         });
 
         options.target.text.set({
-            left: options.target.left + 45,
-            top: options.target.top + 45
+            left: options.target.left+30,
+            top: options.target.top+10
         });
     } else {
         var p = options.target;
@@ -160,6 +167,11 @@ canvas.on('object:modified', function(options) {
         scaleX: 1,
         scaleY: 1
     });
+
+    options.target.text.set({
+        left: options.target.left + 30,
+        top: options.target.top + 10
+    });
 });
 
 canvas.on('selection:created', function(options) {
@@ -210,8 +222,8 @@ function addState() {
     });
 
     var text = new fabric.Text('function', {
-        left: state.left + 45,
-        top: state.top + 45,
+        left: (state.left) + 30,
+        top: (state.top) + 10,
         type: 'state',
         part: 'text',
         fontSize: 15,
