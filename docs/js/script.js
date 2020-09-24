@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-09-24	Zen	Updating wavepoints creation and deletion
  * 2020-09-23	Zen	State name position correction
  * 2020-09-23	Zen	Removing wavepoint
  * 2020-09-22	Zen	Adding wavepoint
@@ -66,7 +67,7 @@ for (var i = 0; i < (canvasWidth / grid); i++) {
     } else {
         color = '#D9D9D9'
     }
-    canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type:'line', stroke: color, selectable: false }));
+    canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type: 'line', stroke: color, selectable: false }));
     canvas.add(new fabric.Line([ 0, i * grid, canvasWidth, i * grid], { type: 'line', stroke: color, selectable: false }))
 }
 
@@ -157,6 +158,24 @@ canvas.on('object:moving', function(options) {
     }
 });
 
+function onChange(options) {
+    options.target.setCoords();
+    canvas.forEachObject(function(obj) {
+        if(obj === options.target || obj.type === options.target.type && obj.id === options.target.id || obj.type === "line") return;
+
+        if(options.target.intersectsWithObject(obj) && obj.type !== "line" && options.target.type !== obj.type) {
+            console.log(options.target.type, obj.type);
+            if(options.target.type === "state") {
+                obj.id_state = options.target.id;
+                console.log(obj.id_state);
+            } else {
+                options.target.id_state = obj.id;
+                console.log(options.target.id_state);
+            }
+        }
+    });
+}
+
 canvas.on('object:modified', function(options) {
     var newWidth = (Math.round(options.target.width * options.target.scaleX / grid)) * grid;
     var newHeight = (Math.round(options.target.height  * options.target.scaleY / grid)) * grid;
@@ -168,10 +187,12 @@ canvas.on('object:modified', function(options) {
         scaleY: 1
     });
 
-    options.target.text.set({
-        left: options.target.left + 30,
-        top: options.target.top + 10
-    });
+    if(options.target.type === "state") {
+        options.target.text.set({
+            left: options.target.left + 30,
+            top: options.target.top + 10
+        });
+    }
 });
 
 canvas.on('selection:created', function(options) {
@@ -210,7 +231,7 @@ function addState() {
         type: 'state',
         part: 'state',
         fill: '',
-        stroke:'Black',
+        stroke:'#666',
         originX: 'left',
         originY: 'top',
         rx: 5,
@@ -267,7 +288,8 @@ function addTransition() {
         hasBorders: false,
         hasControls: false,
         type: 'transition',
-        part: 'in'
+        part: 'in',
+        id_state: null
     });
 
     var line = new fabric.Line([ 60, 60, 60, 120 ], {
@@ -334,7 +356,8 @@ function addTransition() {
         lockScalingY: true,
         lockRotation: true,
         type: 'transition',
-        part: 'out'
+        part: 'out',
+        id_state: null
     });
 
     line.circle = circle;
@@ -345,9 +368,11 @@ function addTransition() {
     circle.line2 = null;
     circle.arrow = arrow;
     circle.text = text;
+    circle.f_arrow = arrow;
 
     arrow.line = line;
     arrow.circle = circle;
+    arrow.f_circle = circle;
     arrow.text = text;
 
     text.line = line;
@@ -446,20 +471,24 @@ document.addEventListener('keydown', function(event) {
     } else if(keyPressed === 83 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
         if(activeObject !== undefined && activeObject !== null && activeObject.type === "transition") {
+            var object = activeObject;
+
+            if(activeObject.part === "in") {
+                object = activeObject.f_arrow;
+            }
+
             var n_circle = new fabric.Circle({
-                left: activeObject.line.left,
-                top: activeObject.line.top,
-                fill: '#fff',
-                stroke: '#666',
-                strokeWidth: 3,
-                radius: 3,
+                left: object.line.left,
+                top: object.line.top,
+                fill: '#666',
+                radius: 4,
                 hasBorders: false,
                 hasControls: false,
                 type: 'transition',
                 part: 'c'
             });
 
-            var n_line = new fabric.Line([ n_circle.left, n_circle.top, activeObject.line.arrow.left, activeObject.line.arrow.top ], {
+            var n_line = new fabric.Line([ n_circle.left, n_circle.top, object.left, object.top ], {
                 type: 'line',
                 originX: 'center',
                 originY: 'center',
@@ -480,47 +509,53 @@ document.addEventListener('keydown', function(event) {
                 part: 'segment'
             });
 
+            if(object.part === "out") {
+                circle = object.circle;
+                arrow = object;
+                line = object.line;
 
-            if(activeObject.part === "in") {
-                arrow = activeObject.arrow;
-                circle = activeObject;
-            } else if(activeObject.part === "out") {
-                arrow = activeObject;
-                circle = activeObject.circle;
+                n_circle.line = n_line;
+                n_circle.line2 = line;
+                n_circle.arrow = arrow;
+                n_circle.text = object.text;
+                n_circle.id = object.id;
+
+                n_line.circle = n_circle;
+                n_line.arrow = arrow;
+                n_line.text = object.text;
+                n_line.id = object.id;
+
+                line.arrow = n_circle;
+                line.set({ 'x2': n_circle.left, 'y2': n_circle.top});
+
+                circle.arrow = n_circle;
+                circle.line = line;
+
+                arrow.circle = n_circle;
+                arrow.line = n_line;
+
+                canvas.add(n_line, n_circle);
             }
 
-            line = activeObject.line;
+            if(activeObject.part === "in") {
+                activeObject.f_arrow = arrow;
+            }
 
-            line.arrow = n_circle;
-            line.set({ 'x2': n_circle.left, 'y2': n_circle.top});
-
-            arrow.circle = n_circle;
-            arrow.line = n_line;
-            circle.arrow = n_circle;
-            circle.line = line;
-
-            n_line.circle = n_circle;
-            n_line.arrow = arrow;
-            n_line.text = activeObject.text;
-            n_line.id = activeObject.id;
-
-            n_circle.line = n_line;
-            n_circle.line2 = line;
-            n_circle.arrow = arrow;
-            n_circle.text = activeObject.text;
-            n_circle.id = activeObject.id;
-
-            canvas.add(n_line, n_circle);
             canvas.renderAll();
         }
     } else if(keyPressed === 68 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
         if(activeObject !== undefined && activeObject !== null && activeObject.type === "transition") {
+            var object = activeObject;
 
-            if(activeObject.part === "in" && activeObject.arrow.part === "c") {
-                arrow = activeObject.arrow;
-                circle = activeObject;
-                line = activeObject.line;
+            if(activeObject.part === "out") {
+                object = activeObject.f_circle;
+            }
+
+            if(object.part === "in" && object.arrow.part === "c") {
+                arrow = object.arrow;
+                circle = object;
+                line = object.line;
 
                 n_arrow = arrow.line.arrow;
                 n_line = arrow.line;
@@ -533,30 +568,16 @@ document.addEventListener('keydown', function(event) {
                 circle.arrow = n_arrow;
                 circle.line = n_line;
 
-
+                if(circle.arrow.part === "out") {
+                    circle.arrow.circle = circle;
+                }
             }
-            // else if(activeObject.part === "out" && activeObject.circle.part === "c") {
-            //     arrow = activeObject;
-            //     circle = activeObject.circle;
-            //     line = activeObject.line;
 
+            if(activeObject.part === "out") {
+                activeObject.f_circle = circle;
+            }
 
-            //     n_circle = circle.line2.circle;
-            //     n_line = circle.line2;
-            //     n_line.arrow = arrow;
-
-            //     canvas.remove(line);
-            //     canvas.remove(circle);
-
-            //     n_line.set({ 'x2': arrow.left, 'y2': arrow.top});
-
-            //     arrow.circle = n_circle;
-            //     arrow.line = n_line;
-
-
-            // }
-
-            // canvas.renderAll();
+            canvas.renderAll();
         }
     }
 });
