@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-09-26	Zen	Adding download and upload option
  * 2020-09-24	Zen	Updating wavepoints creation and deletion
  * 2020-09-23	Zen	State name position correction
  * 2020-09-23	Zen	Removing wavepoint
@@ -91,7 +92,7 @@ function calcArrowAngle(x1, y1, x2, y2) {
 
 // Snap moved State or Transition to the GRID
 canvas.on('object:moving', function(options) {
-    if(options.target.type === 'state') {
+    if(options.target.n_type === 'state') {
         options.target.set({
             left: Math.round(options.target.left / grid) * grid,
             top: Math.round(options.target.top / grid) * grid
@@ -161,11 +162,11 @@ canvas.on('object:moving', function(options) {
 function onChange(options) {
     options.target.setCoords();
     canvas.forEachObject(function(obj) {
-        if(obj === options.target || obj.type === options.target.type && obj.id === options.target.id || obj.type === "line") return;
+        if(obj === options.target || obj.n_type === options.target.n_type && obj.id === options.target.id || obj.n_type === "line") return;
 
-        if(options.target.intersectsWithObject(obj) && obj.type !== "line" && options.target.type !== obj.type) {
-            console.log(options.target.type, obj.type);
-            if(options.target.type === "state") {
+        if(options.target.intersectsWithObject(obj) && obj.n_type !== "line" && options.target.n_type !== obj.n_type) {
+            console.log(options.target.n_type, obj.n_type);
+            if(options.target.n_type === "state") {
                 obj.id_state = options.target.id;
                 console.log(obj.id_state);
             } else {
@@ -187,7 +188,7 @@ canvas.on('object:modified', function(options) {
         scaleY: 1
     });
 
-    if(options.target.type === "state") {
+    if(options.target.n_type === "state") {
         options.target.text.set({
             left: options.target.left + 30,
             top: options.target.top + 10
@@ -196,7 +197,7 @@ canvas.on('object:modified', function(options) {
 });
 
 canvas.on('selection:created', function(options) {
-    console.log(options.target.type)
+    console.log(options.target.n_type)
     if(options.target.part === "text") {
         document.getElementById("rename").value = options.target.text;
     } else {
@@ -205,7 +206,7 @@ canvas.on('selection:created', function(options) {
 });
 
 canvas.on('selection:updated', function(options) {
-    console.log(options.target.type)
+    console.log(options.target.n_type)
     if(options.target.part === "text") {
         document.getElementById("rename").value = options.target.text;
     } else {
@@ -224,11 +225,12 @@ function addState() {
     id = 0;
 
     var state = new fabric.Rect({
+        type: 'rect',
         left: 60,
         top: 60,
         width: 90,
         height: 90,
-        type: 'state',
+        n_type: 'state',
         part: 'state',
         fill: '',
         stroke:'#666',
@@ -243,9 +245,10 @@ function addState() {
     });
 
     var text = new fabric.Text('function', {
+        type: 'text',
         left: (state.left) + 30,
         top: (state.top) + 10,
-        type: 'state',
+        n_type: 'state',
         part: 'text',
         fontSize: 15,
         originX: 'center',
@@ -278,6 +281,7 @@ function addTransition() {
     id = 0;
 
     var circle = new fabric.Circle({
+        type: 'circle',
         left: 60,
         top: 60,
         fill: '#fff',
@@ -287,7 +291,7 @@ function addTransition() {
         id: ID_transition,
         hasBorders: false,
         hasControls: false,
-        type: 'transition',
+        n_type: 'transition',
         part: 'in',
         id_state: null
     });
@@ -310,12 +314,13 @@ function addTransition() {
         lockRotation: true,
         lockMovementX: true,
         lockMovementY: true,
-        type: 'transition',
+        n_type: 'transition',
         part: 'segment',
         next: null,
     });
 
     var text = new fabric.Text('function', {
+        type: 'text',
         left: (line.get('x1') + line.get('x2')) / 2 + 30,
         top: (line.get('y1') + line.get('y2')) / 2,
         fontSize: 15,
@@ -330,7 +335,7 @@ function addTransition() {
         lockRotation: true,
         lockMovementX: true,
         lockMovementY: true,
-        type: 'transition',
+        n_type: 'transition',
         part: 'text',
       });
 
@@ -340,6 +345,7 @@ function addTransition() {
         deltaY = line.top - centerY;
 
     arrow = new fabric.Triangle({
+        type: 'triangle',
         left: line.get('x2') + deltaX,
         top: line.get('y2') + deltaY,
         originX: 'center',
@@ -355,7 +361,7 @@ function addTransition() {
         lockScalingX: true,
         lockScalingY: true,
         lockRotation: true,
-        type: 'transition',
+        n_type: 'transition',
         part: 'out',
         id_state: null
     });
@@ -389,7 +395,7 @@ function deleteList(listItems) {
 
         for(var i = 0; i < len; i+= 1) {
             var item = listItems[i];
-            if(item.type === "state" || item.type === "transition") {
+            if(item.n_type === "state" || item.n_type === "transition") {
                 list.push(item);
             }
         }
@@ -410,7 +416,7 @@ function deleteID(ID, type) {
     for(var i = 0; i < len; i+= 1) {
         var item = listItems[i];
 
-        if(item.type === type && item.id === ID) {
+        if(item.n_type === type && item.id === ID) {
             list.push(item);
         }
     }
@@ -428,6 +434,30 @@ function deleteAllObjects() {
     deleteList(objects);
 }
 
+function downloadingFile() {
+    var text = JSON.stringify(canvas);
+    var file = "GFG.json";
+
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
+    element.setAttribute('download', file);
+
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+function uploadingFile(event) {
+    var reader = new FileReader();
+    reader.onload = handleFileLoad;
+    reader.readAsText(event.target.files[0]);
+}
+
+function handleFileLoad(event) {
+  canvas.loadFromJSON(event.target.result);
+}
+
 // Actions
 var addingState = document.getElementById('addnewstate');
 addingState.addEventListener('click', addState);
@@ -438,13 +468,19 @@ addingTransition.addEventListener('click', addTransition);
 var deletingObjects = document.getElementById('delete');
 deletingObjects.addEventListener('click', deleteAllObjects);
 
+var downloadFile = document.getElementById('download');
+downloadFile.addEventListener('click', downloadingFile)
+
+var uploadFile = document.getElementById('file-selector');
+uploadFile.addEventListener('change', uploadingFile);
+
 document.addEventListener('keydown', function(event) {
     var keyPressed = event.keyCode;
     if(keyPressed == 46) {
         var activeObject = canvas.getActiveObject();
-        if(activeObject !== null && activeObject.type === "state") {
+        if(activeObject !== null && activeObject.n_type === "state") {
             deleteID(activeObject.id, "state");
-        } else if(activeObject !== null && activeObject.type === "transition") {
+        } else if(activeObject !== null && activeObject.n_type === "transition") {
             deleteID(activeObject.id, "transition");
         }
     } else if(keyPressed === 13) {
@@ -470,7 +506,7 @@ document.addEventListener('keydown', function(event) {
         }
     } else if(keyPressed === 83 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
-        if(activeObject !== undefined && activeObject !== null && activeObject.type === "transition") {
+        if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
             var object = activeObject;
 
             if(activeObject.part === "in") {
@@ -478,13 +514,14 @@ document.addEventListener('keydown', function(event) {
             }
 
             var n_circle = new fabric.Circle({
+                type: 'circle',
                 left: object.line.left,
                 top: object.line.top,
                 fill: '#666',
                 radius: 4,
                 hasBorders: false,
                 hasControls: false,
-                type: 'transition',
+                n_type: 'transition',
                 part: 'c'
             });
 
@@ -505,7 +542,7 @@ document.addEventListener('keydown', function(event) {
                 lockRotation: true,
                 lockMovementX: true,
                 lockMovementY: true,
-                type: 'transition',
+                n_type: 'transition',
                 part: 'segment'
             });
 
@@ -545,7 +582,7 @@ document.addEventListener('keydown', function(event) {
         }
     } else if(keyPressed === 68 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
-        if(activeObject !== undefined && activeObject !== null && activeObject.type === "transition") {
+        if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
             var object = activeObject;
 
             if(activeObject.part === "out") {
