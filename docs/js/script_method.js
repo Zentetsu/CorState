@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-01	Zen	Adding state encapsulation detection
  * 2020-09-30	Zen	Refactoring
  */
 
@@ -73,18 +74,47 @@ function calcArrowAngle(x1, y1, x2, y2) {
 
 function onChange(options) {
     options.target.setCoords();
-    canvas.forEachObject(function(obj) {
-        if(obj === options.target || obj.n_type === options.target.n_type && obj.id === options.target.id || obj.n_type === "line") return;
 
-        if(options.target.intersectsWithObject(obj) && obj.n_type !== "line" && options.target.n_type !== obj.n_type) {
-            console.log(options.target.n_type, obj.n_type);
-            if(options.target.n_type === "state") {
-                obj.id_state = options.target.id;
-                console.log(obj.id_state);
-            } else {
-                options.target.id_state = obj.id;
-                console.log(options.target.id_state);
+    var list = [];
+
+    canvas.forEachObject(function(obj) {
+        if(options.target.isContainedWithinObject(obj) && obj.n_type === "state" && obj.is !== options.target.id) {
+            list.push(obj);
+        }
+    });
+
+    if (list.length === 1) {
+        setEncapsuler(list[0].id);
+    } else if(list.length > 1) {
+        var size = list.length;
+        var cur = 0;
+        while(size > 1) {
+            var to_pop = list[cur];
+            var popping = false;
+
+            for (let i = 0; i < list.length; i++) {
+                if(to_pop.isContainedWithinObject(list[i])) {
+                    popping = true;
+                }
             }
+
+            if(popping) {
+                list.shift();
+                size = list.length;
+                cur = 0;
+            } else {
+                cur += 1;
+            }
+        }
+
+        setEncapsuler(list[0].id);
+    }
+}
+
+function setEncapsuler(id) {
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "state" && obj.id === id) {
+            obj.set({encapsuler: true});
         }
     });
 }
@@ -449,19 +479,6 @@ function dumpSM() {
                 d["StateMachine"]["Transition"]["out"] = t;
             } else {
                 d["StateMachine"]["Transition"][obj.text] = t;
-            }
-        }
-
-        if(obj === options.target || obj.n_type === options.target.n_type && obj.id === options.target.id || obj.n_type === "line") return;
-
-        if(options.target.intersectsWithObject(obj) && obj.n_type !== "line" && options.target.n_type !== obj.n_type) {
-            console.log(options.target.n_type, obj.n_type);
-            if(options.target.n_type === "state") {
-                obj.id_state = options.target.id;
-                console.log(obj.id_state);
-            } else {
-                options.target.id_state = obj.id;
-                console.log(options.target.id_state);
             }
         }
     });

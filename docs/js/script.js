@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-01	Zen	Adding state encapsulation detection
  * 2020-09-30	Zen	Refactoring
  * 2020-09-26	Zen	Adding download and upload option
  * 2020-09-24	Zen	Updating wavepoints creation and deletion
@@ -69,6 +70,7 @@ canvas.on('object:moving', function(options) {
         });
 
         moveText(options.target.id, options.target.n_type, options.target.left+30, options.target.top+10);
+        onChange(options);
     } else {
         var p = options.target;
 
