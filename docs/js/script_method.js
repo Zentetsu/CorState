@@ -72,19 +72,26 @@ function calcArrowAngle(x1, y1, x2, y2) {
     return (angle * 180 / Math.PI);
 }
 
-function onChange(options) {
-    options.target.setCoords();
+function checkEncapsuled(object) {
+    object.setCoords();
 
     var list = [];
 
     canvas.forEachObject(function(obj) {
-        if(options.target.isContainedWithinObject(obj) && obj.n_type === "state" && obj.is !== options.target.id) {
-            list.push(obj);
+        if(object.isContainedWithinObject(obj) && !getIntersection(object) && obj.n_type === "state") {
+            if(object.n_type === "state" && obj.id !== object.id || object.n_type === "transition") {
+                list.push(obj);
+                console.log("toto");
+            }
         }
     });
 
     if (list.length === 1) {
-        setEncapsuler(list[0].id);
+        if(object.encapsuled !== list[0].id) {
+            setEncapsuler(object.encapsuled, object.id, false, object.n_type);
+        }
+        setEncapsuler(list[0].id, object.id, true, object.n_type);
+        setEncapsuled(object.id, list[0].id);
     } else if(list.length > 1) {
         var size = list.length;
         var cur = 0;
@@ -107,16 +114,121 @@ function onChange(options) {
             }
         }
 
-        setEncapsuler(list[0].id);
+        setEncapsuler(list[0].id, object.id, true, object.n_type);
+        setEncapsuled(object.id, list[0].id);
+    } else {
+        setEncapsuler(object.encapsuled, object.id, false, object.n_type);
+        setEncapsuled(object.id, NaN);
     }
 }
 
-function setEncapsuler(id) {
+function checkEncapsuler(object) {
+    object.setCoords();
+
+    var list = [];
+
     canvas.forEachObject(function(obj) {
-        if(obj.n_type === "state" && obj.id === id) {
-            obj.set({encapsuler: true});
+        if(obj.isContainedWithinObject(object) && obj.id !== object.id) {
+            if(isNaN(obj.encapsuled) || obj.encapsuled === object.encapsuled) {
+                list.push(obj);
+                object.encapsuler.push(obj.id);
+                console.log("toto");
+            }
         }
     });
+
+    if(list.length >= 1) {
+        var cur = 0;
+        var size = object.encapsuler.length;
+
+        while(size > list.length) {
+            var pres = false;
+
+            for(let i = 0; i < list.length; i++) {
+                if(list[i].id === object.encapsuler[cur]) {
+                    pres = true;
+                }
+            }
+
+            if(!pres) {
+                var state = getState(object.encapsuler[cur]);
+                state.set({encapsuled: object.encapsuled});
+
+                object.encapsuled.splice(cur, 1);
+                size = object.encapsuled.length;
+            } else {
+                cur += 1;
+            }
+        }
+
+    }
+}
+
+function getIntersection(object) {
+    var inter = false;
+    object.setCoords();
+    canvas.forEachObject(function(obj) {
+        if(object.n_type === "transition" && obj.type !== "line" && obj.n_type !== "transition") {
+            if(object.intersectsWithObject(obj) && !object.isContainedWithinObject(obj)) {
+                inter = true;
+            }
+        }
+    });
+
+    return inter;
+}
+
+function setEncapsuler(id, id_e, add, type) {
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "state" && obj.part === "state" && obj.id === id && type === "state") {
+            if(add) {
+                if(!obj.encapsuler.includes(id_e)) {
+                    obj.encapsuler.push(id_e);
+                }
+            } else {
+                for(let i = 0; i < obj.encapsuler.length; i++) {
+                    if(obj.encapsuler[i] === id_e) {
+                        obj.encapsuler.splice(i, 1);
+                    }
+                }
+            }
+        } else if(obj.n_type === "state" && obj.part === "state" && obj.id === id && type === "transition") {
+            if(add) {
+                if(!obj.encapsuler_a.includes(id_e)) {
+                    obj.encapsuler_a.push(id_e);
+                }
+            } else {
+                for(let i = 0; i < obj.encapsuler_a.length; i++) {
+                    if(obj.encapsuler_a[i] === id_e) {
+                        obj.encapsuler_a.splice(i, 1);
+                    }
+                }
+            }
+        }
+    });
+}
+
+function setEncapsuled(id, id_e) {
+    canvas.forEachObject(function(obj) {
+        if((obj.n_type === "state" && obj.part === "state" || obj.n_type == "transition" && (obj.part === "in" || obj.part === "out")) && obj.id === id) {
+            if(obj.part === "out") {
+                obj.set({encapsuled: -id_e});
+            } else {
+                obj.set({encapsuled: id_e});
+            }
+        }
+    });
+}
+
+function getIndex(id) {
+    var index = -1;
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "state" && obj.part === "state" && obj.id === id) {
+            index = obj.get('index');
+        }
+    });
+
+    return index;
 }
 
 function addState() {
@@ -130,6 +242,7 @@ function addState() {
         part: 'state',
         fill: '',
         stroke:'#666',
+        strokeWidth: 2,
         originX: 'left',
         originY: 'top',
         rx: 5,
@@ -138,7 +251,10 @@ function addState() {
         hasControls: true,
         hasRotatingPoint: false,
         lockRotation: true,
-        encapsuler: false,
+        encapsuler: [],
+        encapsuler_a: [],
+        encapsuled: NaN,
+        index: 0,
     });
 
     var text = new fabric.Text('function', {
@@ -180,7 +296,9 @@ function addTransition() {
         hasControls: false,
         n_type: 'transition',
         part: 'in',
-        id_state: null
+        id_state: null,
+        encapsuled: NaN,
+        index: 0,
     });
 
     var line = new fabric.Line([ 60, 60, 60, 120 ], {
@@ -249,7 +367,9 @@ function addTransition() {
         lockRotation: true,
         n_type: 'transition',
         part: 'out',
-        id_state: null
+        id_state: null,
+        encapsuled: NaN,
+        index: 0,
     });
 
     line.circle = circle.id;
@@ -295,6 +415,19 @@ function getText(id) {
 
     canvas.forEachObject(function(obj) {
         if(obj.part === "text" && obj.id === id) {
+            // console.log("toto")
+            val = obj;
+        }
+    });
+
+    return val;
+}
+
+function getState(id) {
+    var val;
+
+    canvas.forEachObject(function(obj) {
+        if(obj.part === "state" && obj.part ==="state" && obj.id === id) {
             // console.log("toto")
             val = obj;
         }
@@ -487,7 +620,8 @@ function dumpSM() {
 function downloadingFile() {
     var text = JSON.stringify(canvas.toJSON(['selectable', 'hasBorders', 'hasControls', 'lockScalingX', 'lockScalingY',
                                              'lockRotation', 'lockMovementX', 'lockMovementY', 'id', 'text', 'n_type',
-                                             'part', 'line', 'line2', 'circle', 'arrow', 'f_circle', 'f_arrow', 'encapsuler']));
+                                             'part', 'line', 'line2', 'circle', 'arrow', 'f_circle', 'f_arrow', 'encapsuler',
+                                            'encapsuled', 'index']));
 
     // var dump = dumpSM();
     var file = "GFG.json";

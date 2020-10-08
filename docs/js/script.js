@@ -43,7 +43,7 @@
 
 
 // Init GRID
-var canvas = new fabric.Canvas('canvas', { selection: false });
+var canvas = new fabric.Canvas('canvas', { selection: false, preserveObjectStacking: true });
 var canvasWidth =  window.innerWidth * 0.98;
 var canvasHeight = window.innerHeight * 0.95;
 var unitScale = 10;
@@ -52,6 +52,7 @@ var ID_transition = 0;
 var ID_state = 0;
 
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+fabric.Object.prototype.transparentCorners = false;
 
 canvas.setWidth(canvasWidth);
 canvas.setHeight(canvasHeight);
@@ -70,7 +71,21 @@ canvas.on('object:moving', function(options) {
         });
 
         moveText(options.target.id, options.target.n_type, options.target.left+30, options.target.top+10);
-        onChange(options);
+        checkEncapsuled(options.target);
+        checkEncapsuler(options.target);
+        if(options.target.encapsuled === NaN) {
+            canvas.moveTo(options.target, 0);
+            options.target.moveTo(0);
+            options.target.index = 0;
+        } else {
+            var index = getIndex(options.target.encapsuled)+1;
+            canvas.moveTo(options.target, index);
+            options.target.moveTo(index);
+            options.target.index = index;
+        }
+
+        console.log("s", options.target.encapsuler);
+        console.log("a", options.target.encapsuler_a);
     } else {
         var p = options.target;
 
@@ -119,6 +134,8 @@ canvas.on('object:moving', function(options) {
         var n_top = (line_pos[1] + line_pos[3]) / 2 + add_top;
 
         moveText(p.id, p.n_type, n_left, n_top);
+
+        checkEncapsuled(p);
     }
 });
 
