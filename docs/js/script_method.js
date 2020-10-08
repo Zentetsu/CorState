@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-08	Zen	Adding SM structure generation
  * 2020-10-08	Zen	Adding dynamic update transition encapsulation
  * 2020-10-08	Zen	Adding dynamic update state encapsulation
  * 2020-10-01	Zen	Adding state encapsulation detection
@@ -524,50 +525,35 @@ function dumpSM() {
     var d = {"path": "", "StateMachine": {"Variable": {}, "State": {}, "Transition": {}}};
 
     canvas.forEachObject(function(obj) {
-        if(obj.n_type === "state") {
+        if(obj.n_type === "state" && obj.part === "state") {
             var s = {
-                        "id":obj.id,
-                        "action": obj.text,
+                        "id":(obj.id),
+                        "action": getText(obj.text).text,
                         "encapsulation": obj.encapsulation
                     }
 
-            d["StateMachine"]["State"][obj.text] = s;
-        } else if(obj.n_type === "transition" && obj.part === "circle") {
+            d["StateMachine"]["State"][getText(obj.text).text] = s;
+        } else if(obj.n_type === "transition" && obj.part === "in") {
+            var arrow = getArrow(obj.f_arrow);
 
             var t = {
                         "id": obj.id,
-                        "id_in": "inf",
-                        "id_out": "inf",
-                        "evaluation": obj.text
+                        "id_in": (isNaN(obj.id_state)) ? "inf" : obj.id_state,
+                        "id_out": (isNaN(arrow.id_state)) ? "inf" : (isNaN(arrow.encapsuler)) ? arrow.id_state : -arrow.id_state,
+                        "evaluation": getText(obj.text).text
                     }
 
-            // canvas.forEachObject(function(obj2) {
-            //     if(obj.intersectsWithObject(obj2) && obj2.n_type === "state") {
-            //         t["id_in"] = obj.id;
-            //     }
-            // });
-
-            // canvas.forEachObject(function(obj2) {
-            //     if(obj.f_arrow.intersectsWithObject(obj2) && obj2.n_type === "state") {
-            //         t["id_out"] = obj.id;
-            //     }
-            // });
-
-            // if(t["id_in"] === "inf" && obj.encapsuled) {
-            //     t["id_in"] = obj.encapsuler_id;
-            // } else if(t["id_out"] === "inf" && obj.encapsuled) {
-            //     t["id_out"] = -obj.encapsuler_id;
-            // }
-
-            // if(t["id_in"] === "inf") {
-            //     d["StateMachine"]["Transition"]["in"] = t;
-            // } else if(t["id_out"] === "inf") {
-            //     d["StateMachine"]["Transition"]["out"] = t;
-            // } else {
-            //     d["StateMachine"]["Transition"][obj.text] = t;
-            // }
+            if(t["id_in"] === "inf") {
+                d["StateMachine"]["Transition"]["in"] = t;
+            } else if(t["id_out"] === "inf") {
+                d["StateMachine"]["Transition"]["out"] = t;
+            } else {
+                d["StateMachine"]["Transition"][getText(obj.text).text] = t;
+            }
         }
     });
+
+    return d;
 }
 
 function downloadingFile() {
@@ -576,7 +562,8 @@ function downloadingFile() {
                                              'part', 'line', 'line2', 'circle', 'arrow', 'f_circle', 'f_arrow', 'encapsuler',
                                              'index']));
 
-    // var dump = dumpSM();
+    var dump = dumpSM();
+    console.log(dump);
     var file = "GFG.json";
 
     var element = document.createElement('a');
