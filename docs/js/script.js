@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-08	Zen	Adding dynamic update transition encapsulation
  * 2020-10-08	Zen	Adding dynamic update state encapsulation
  * 2020-10-01	Zen	Adding state encapsulation detection
  * 2020-09-30	Zen	Refactoring
@@ -72,9 +73,9 @@ canvas.on('object:moving', function(options) {
         });
 
         moveText(options.target.id, options.target.n_type, options.target.left+30, options.target.top+10);
-        // checkEncapsuled(options.target);
-        // checkEncapsuler(options.target);
+
         updateSM();
+
         if(options.target.encapsuler === NaN) {
             canvas.moveTo(options.target, 0);
             options.target.moveTo(0);
@@ -86,8 +87,6 @@ canvas.on('object:moving', function(options) {
             options.target.index = index;
         }
 
-        // console.log("s", options.target.encapsuler);
-        // console.log("a", options.target.encapsuler_a);
     } else {
         var p = options.target;
 
@@ -137,7 +136,6 @@ canvas.on('object:moving', function(options) {
 
         moveText(p.id, p.n_type, n_left, n_top);
 
-        // checkEncapsuled(p);
         updateSM();
     }
 });

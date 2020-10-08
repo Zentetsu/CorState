@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-08	Zen	Adding dynamic update transition encapsulation
  * 2020-10-08	Zen	Adding dynamic update state encapsulation
  * 2020-10-01	Zen	Adding state encapsulation detection
  * 2020-09-30	Zen	Refactoring
@@ -74,14 +75,38 @@ function calcArrowAngle(x1, y1, x2, y2) {
 }
 
 function updateSM() {
-    var l_s = [];
-
     canvas.forEachObject(function(obj) {
         if(obj.n_type === "state" && obj.part === "state") {
-            console.log(obj.id, getContainer(obj));
             obj.encapsuler = getContainer(obj);
+            obj.encapsulation = getEncapsuling(obj);
         }
     });
+
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "transition" && (obj.part === "in" || obj.part === "out")) {
+            obj.encapsuler = getContainer(obj);
+            obj.id_state = obj.encapsuler;
+
+            if(isNaN(obj.encapsuler)) {
+                obj.id_state = getIntersection(obj);
+            }
+        }
+    });
+}
+
+function getEncapsuling(object) {
+    object.setCoords();
+    var enc = false;
+
+    canvas.forEachObject(function(obj) {
+        if(obj.isContainedWithinObject(object) && obj.n_type === "state" && obj.part === "state") {
+            if(object.id !== obj.id) {
+                enc = true;
+            }
+        }
+    });
+
+    return enc;
 }
 
 function getContainer(object) {
@@ -91,7 +116,9 @@ function getContainer(object) {
 
     canvas.forEachObject(function(obj) {
         if(object.isContainedWithinObject(obj) && obj.n_type === "state" && obj.part === "state") {
-            if(object.id !== obj.id) {
+            if(object.id !== obj.id && object.n_type === "state") {
+                list.push(obj);
+            } else if(object.n_type === "transition" && isNaN(getIntersection(object))) {
                 list.push(obj);
             }
         }
@@ -133,152 +160,18 @@ function getContainer(object) {
     return list[cur].id;
 }
 
-function checkEncapsuled(object) {
-    object.setCoords();
-
-    var list = [];
-
-    canvas.forEachObject(function(obj) {
-        if(object.isContainedWithinObject(obj) && !getIntersection(object) && obj.n_type === "state") {
-            if(object.n_type === "state" && obj.id !== object.id || object.n_type === "transition") {
-                list.push(obj);
-                console.log("toto");
-            }
-        }
-    });
-
-    if (list.length === 1) {
-        if(object.encapsuled !== list[0].id) {
-            setEncapsuler(object.encapsuled, object.id, false, object.n_type);
-        }
-        setEncapsuler(list[0].id, object.id, true, object.n_type);
-        setEncapsuled(object.id, list[0].id);
-    } else if(list.length > 1) {
-        var size = list.length;
-        var cur = 0;
-        while(size > 1) {
-            var to_pop = list[cur];
-            var popping = false;
-
-            for (let i = 0; i < list.length; i++) {
-                if(to_pop.isContainedWithinObject(list[i])) {
-                    popping = true;
-                }
-            }
-
-            if(popping) {
-                list.shift();
-                size = list.length;
-                cur = 0;
-            } else {
-                cur += 1;
-            }
-        }
-
-        setEncapsuler(list[0].id, object.id, true, object.n_type);
-        setEncapsuled(object.id, list[0].id);
-    } else {
-        setEncapsuler(object.encapsuled, object.id, false, object.n_type);
-        setEncapsuled(object.id, NaN);
-    }
-}
-
-function checkEncapsuler(object) {
-    object.setCoords();
-
-    var list = [];
-
-    canvas.forEachObject(function(obj) {
-        if(obj.isContainedWithinObject(object) && obj.id !== object.id) {
-            if(isNaN(obj.encapsuled) || obj.encapsuled === object.encapsuled) {
-                list.push(obj);
-                object.encapsuler.push(obj.id);
-                console.log("toto");
-            }
-        }
-    });
-
-    if(list.length >= 1) {
-        var cur = 0;
-        var size = object.encapsuler.length;
-
-        while(size > list.length) {
-            var pres = false;
-
-            for(let i = 0; i < list.length; i++) {
-                if(list[i].id === object.encapsuler[cur]) {
-                    pres = true;
-                }
-            }
-
-            if(!pres) {
-                var state = getState(object.encapsuler[cur]);
-                state.set({encapsuled: object.encapsuled});
-
-                object.encapsuled.splice(cur, 1);
-                size = object.encapsuled.length;
-            } else {
-                cur += 1;
-            }
-        }
-
-    }
-}
-
 function getIntersection(object) {
-    var inter = false;
+    var inter = NaN;
     object.setCoords();
     canvas.forEachObject(function(obj) {
         if(object.n_type === "transition" && obj.type !== "line" && obj.n_type !== "transition") {
             if(object.intersectsWithObject(obj) && !object.isContainedWithinObject(obj)) {
-                inter = true;
+                inter = obj.id;
             }
         }
     });
 
     return inter;
-}
-
-function setEncapsuler(id, id_e, add, type) {
-    canvas.forEachObject(function(obj) {
-        if(obj.n_type === "state" && obj.part === "state" && obj.id === id && type === "state") {
-            if(add) {
-                if(!obj.encapsuler.includes(id_e)) {
-                    obj.encapsuler.push(id_e);
-                }
-            } else {
-                for(let i = 0; i < obj.encapsuler.length; i++) {
-                    if(obj.encapsuler[i] === id_e) {
-                        obj.encapsuler.splice(i, 1);
-                    }
-                }
-            }
-        } else if(obj.n_type === "state" && obj.part === "state" && obj.id === id && type === "transition") {
-            if(add) {
-                if(!obj.encapsuler_a.includes(id_e)) {
-                    obj.encapsuler_a.push(id_e);
-                }
-            } else {
-                for(let i = 0; i < obj.encapsuler_a.length; i++) {
-                    if(obj.encapsuler_a[i] === id_e) {
-                        obj.encapsuler_a.splice(i, 1);
-                    }
-                }
-            }
-        }
-    });
-}
-
-function setEncapsuled(id, id_e) {
-    canvas.forEachObject(function(obj) {
-        if((obj.n_type === "state" && obj.part === "state" || obj.n_type == "transition" && (obj.part === "in" || obj.part === "out")) && obj.id === id) {
-            if(obj.part === "out") {
-                obj.set({encapsuled: -id_e});
-            } else {
-                obj.set({encapsuled: id_e});
-            }
-        }
-    });
 }
 
 function getIndex(id) {
@@ -313,6 +206,7 @@ function addState() {
         hasRotatingPoint: false,
         lockRotation: true,
         encapsuler: NaN,
+        encapsulation: false,
         index: 0,
     });
 
@@ -355,8 +249,8 @@ function addTransition() {
         hasControls: false,
         n_type: 'transition',
         part: 'in',
-        id_state: null,
-        encapsuled: NaN,
+        id_state: NaN,
+        encapsuler: NaN,
         index: 0,
     });
 
@@ -426,8 +320,8 @@ function addTransition() {
         lockRotation: true,
         n_type: 'transition',
         part: 'out',
-        id_state: null,
-        encapsuled: NaN,
+        id_state: NaN,
+        encapsuler: NaN,
         index: 0,
     });
 
@@ -634,7 +528,7 @@ function dumpSM() {
             var s = {
                         "id":obj.id,
                         "action": obj.text,
-                        "encapsulation": obj.encapsuler
+                        "encapsulation": obj.encapsulation
                     }
 
             d["StateMachine"]["State"][obj.text] = s;
@@ -647,31 +541,31 @@ function dumpSM() {
                         "evaluation": obj.text
                     }
 
-            canvas.forEachObject(function(obj2) {
-                if(obj.intersectsWithObject(obj2) && obj2.n_type === "state") {
-                    t["id_in"] = obj.id;
-                }
-            });
+            // canvas.forEachObject(function(obj2) {
+            //     if(obj.intersectsWithObject(obj2) && obj2.n_type === "state") {
+            //         t["id_in"] = obj.id;
+            //     }
+            // });
 
-            canvas.forEachObject(function(obj2) {
-                if(obj.f_arrow.intersectsWithObject(obj2) && obj2.n_type === "state") {
-                    t["id_out"] = obj.id;
-                }
-            });
+            // canvas.forEachObject(function(obj2) {
+            //     if(obj.f_arrow.intersectsWithObject(obj2) && obj2.n_type === "state") {
+            //         t["id_out"] = obj.id;
+            //     }
+            // });
 
-            if(t["id_in"] === "inf" && obj.encapsuled) {
-                t["id_in"] = obj.encapsuler_id;
-            } else if(t["id_out"] === "inf" && obj.encapsuled) {
-                t["id_out"] = -obj.encapsuler_id;
-            }
+            // if(t["id_in"] === "inf" && obj.encapsuled) {
+            //     t["id_in"] = obj.encapsuler_id;
+            // } else if(t["id_out"] === "inf" && obj.encapsuled) {
+            //     t["id_out"] = -obj.encapsuler_id;
+            // }
 
-            if(t["id_in"] === "inf") {
-                d["StateMachine"]["Transition"]["in"] = t;
-            } else if(t["id_out"] === "inf") {
-                d["StateMachine"]["Transition"]["out"] = t;
-            } else {
-                d["StateMachine"]["Transition"][obj.text] = t;
-            }
+            // if(t["id_in"] === "inf") {
+            //     d["StateMachine"]["Transition"]["in"] = t;
+            // } else if(t["id_out"] === "inf") {
+            //     d["StateMachine"]["Transition"]["out"] = t;
+            // } else {
+            //     d["StateMachine"]["Transition"][obj.text] = t;
+            // }
         }
     });
 }
@@ -680,7 +574,7 @@ function downloadingFile() {
     var text = JSON.stringify(canvas.toJSON(['selectable', 'hasBorders', 'hasControls', 'lockScalingX', 'lockScalingY',
                                              'lockRotation', 'lockMovementX', 'lockMovementY', 'id', 'text', 'n_type',
                                              'part', 'line', 'line2', 'circle', 'arrow', 'f_circle', 'f_arrow', 'encapsuler',
-                                            'encapsuled', 'index']));
+                                             'index']));
 
     // var dump = dumpSM();
     var file = "GFG.json";
