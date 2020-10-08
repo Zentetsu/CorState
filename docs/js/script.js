@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-08	Zen	Adding dynamic update state encapsulation
  * 2020-10-01	Zen	Adding state encapsulation detection
  * 2020-09-30	Zen	Refactoring
  * 2020-09-26	Zen	Adding download and upload option
@@ -71,21 +72,22 @@ canvas.on('object:moving', function(options) {
         });
 
         moveText(options.target.id, options.target.n_type, options.target.left+30, options.target.top+10);
-        checkEncapsuled(options.target);
-        checkEncapsuler(options.target);
-        if(options.target.encapsuled === NaN) {
+        // checkEncapsuled(options.target);
+        // checkEncapsuler(options.target);
+        updateSM();
+        if(options.target.encapsuler === NaN) {
             canvas.moveTo(options.target, 0);
             options.target.moveTo(0);
             options.target.index = 0;
         } else {
-            var index = getIndex(options.target.encapsuled)+1;
+            var index = getIndex(options.target.encapsuler)+1;
             canvas.moveTo(options.target, index);
             options.target.moveTo(index);
             options.target.index = index;
         }
 
-        console.log("s", options.target.encapsuler);
-        console.log("a", options.target.encapsuler_a);
+        // console.log("s", options.target.encapsuler);
+        // console.log("a", options.target.encapsuler_a);
     } else {
         var p = options.target;
 
@@ -135,7 +137,8 @@ canvas.on('object:moving', function(options) {
 
         moveText(p.id, p.n_type, n_left, n_top);
 
-        checkEncapsuled(p);
+        // checkEncapsuled(p);
+        updateSM();
     }
 });
 

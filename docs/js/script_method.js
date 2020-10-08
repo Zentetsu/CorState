@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-08	Zen	Adding dynamic update state encapsulation
  * 2020-10-01	Zen	Adding state encapsulation detection
  * 2020-09-30	Zen	Refactoring
  */
@@ -70,6 +71,66 @@ function calcArrowAngle(x1, y1, x2, y2) {
     }
 
     return (angle * 180 / Math.PI);
+}
+
+function updateSM() {
+    var l_s = [];
+
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "state" && obj.part === "state") {
+            console.log(obj.id, getContainer(obj));
+            obj.encapsuler = getContainer(obj);
+        }
+    });
+}
+
+function getContainer(object) {
+    object.setCoords();
+
+    var list = [];
+
+    canvas.forEachObject(function(obj) {
+        if(object.isContainedWithinObject(obj) && obj.n_type === "state" && obj.part === "state") {
+            if(object.id !== obj.id) {
+                list.push(obj);
+            }
+        }
+    });
+
+    if(list.length === 0) {
+        return NaN;
+    } else if(list.length === 1) {
+        return list[0].id;
+    }
+
+    var find = false;
+    var cur = 0;
+
+    while(!find) {
+        var s = list[cur];
+
+        for(let i = 0; i < list.length; i++) {
+            if(s === undefined) {
+                return NaN;
+            }
+            if(s.id !== list[i].id) {
+                if(!s.isContainedWithinObject(list[i])) {
+                    find = false;
+                    break;
+                } else {
+                    find = true;
+                }
+            }
+        }
+
+        if(find) {
+            break;
+        } else {
+            cur += 1;
+        }
+    }
+
+    return list[cur].id;
 }
 
 function checkEncapsuled(object) {
@@ -251,9 +312,7 @@ function addState() {
         hasControls: true,
         hasRotatingPoint: false,
         lockRotation: true,
-        encapsuler: [],
-        encapsuler_a: [],
-        encapsuled: NaN,
+        encapsuler: NaN,
         index: 0,
     });
 
