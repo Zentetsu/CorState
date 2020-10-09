@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-10	Zen	Moving transition by dragging name
  * 2020-10-09	Zen	Name update correction
  * 2020-10-08	Zen	Adding dynamic update transition encapsulation
  * 2020-10-08	Zen	Adding dynamic update state encapsulation
@@ -114,6 +115,12 @@ canvas.on('object:moving', function(options) {
                 add_top = 0;
                 add_left = 30;
             }
+
+            var n_left = (line_pos[0] + line_pos[2]) / 2 + add_left;
+            var n_top = (line_pos[1] + line_pos[3]) / 2 + add_top;
+
+            moveText(p.id, p.n_type, n_left, n_top);
+            updateOldPos(p.id, n_left, n_top);
         } else if(p.part === 'out') {
             moveLine(p.line, null, null, Math.round(p.left / grid) * grid, Math.round(p.top / grid) * grid);
             var line_pos = getLine(p.line);
@@ -130,12 +137,18 @@ canvas.on('object:moving', function(options) {
                 add_top = 0;
                 add_left = 30;
             }
+
+            var n_left = (line_pos[0] + line_pos[2]) / 2 + add_left;
+            var n_top = (line_pos[1] + line_pos[3]) / 2 + add_top;
+
+            moveText(p.id, p.n_type, n_left, n_top);
+            updateOldPos(p.id, n_left, n_top);
+            p.setCoords();
+
+        }else if(p.part === "text") {
+            moveTransition(p.id, Math.round(p.left / grid) * grid, Math.round(p.top / grid) * grid);
+            updateOldPos(p.id, p.left, p.top);
         }
-
-        var n_left = (line_pos[0] + line_pos[2]) / 2 + add_left;
-        var n_top = (line_pos[1] + line_pos[3]) / 2 + add_top;
-
-        moveText(p.id, p.n_type, n_left, n_top);
 
         updateSM();
     }
@@ -159,11 +172,17 @@ canvas.on('object:modified', function(options) {
 
 canvas.on('selection:created', function(options) {
     var txt = getText(options.target.text, options.target.n_type);
+    if(options.target.part === "text") {
+        txt = options.target;
+    }
     document.getElementById("rename").value = txt.text;
 });
 
 canvas.on('selection:updated', function(options) {
     var txt = getText(options.target.text, options.target.n_type);
+    if(options.target.part === "text") {
+        txt = options.target;
+    }
     document.getElementById("rename").value = txt.text;
 });
 
@@ -171,6 +190,14 @@ canvas.on('selection:cleared', function(options) {
     document.getElementById("rename").value = "";
     document.getElementById("rename").readOnly = true;
 });
+
+onmouseup = function() {
+    var activeObject = canvas.getActiveObject();
+    console.log(activeObject)
+    if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
+        canvas.discardActiveObject().renderAll();
+    }
+};
 
 // Actions
 var addingState = document.getElementById('addnewstate');
@@ -221,6 +248,10 @@ document.addEventListener('keydown', function(event) {
     } else if(keyPressed === 83 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
         if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
+            if(activeObject.part === "text") {
+                return
+            }
+
             var object = activeObject;
 
             if(activeObject.part === "in") {
@@ -234,11 +265,11 @@ document.addEventListener('keydown', function(event) {
                 left: val_l[4],
                 top: val_l[5],
                 fill: '#666',
-                radius: 4,
-                hasBorders: false,
-                hasControls: false,
+                radius: 5,
                 n_type: 'transition',
-                part: 'c'
+                part: 'c',
+                o_l: getText(object.text, "transition").left,
+                o_t: getText(object.text, "transition").top,
             });
 
             var n_line = new fabric.Line([n_circle.left, n_circle.top, val_l[2], val_l[3]], {
@@ -248,19 +279,18 @@ document.addEventListener('keydown', function(event) {
                 fill: '',
                 stroke: '#666',
                 strokeWidth: 2,
-                selectable: true,
-                hasBorders: false,
-                hasControls: false,
-                hasBorders: false,
-                hasControls: false,
+                selectable: false,
                 lockScalingX: true,
                 lockScalingY: true,
                 lockRotation: true,
                 lockMovementX: true,
                 lockMovementY: true,
                 n_type: 'transition',
-                part: 'segment'
+                part: 'segment',
+                hoverCursor: 'cursor'
             });
+            canvas.moveTo(n_line, -100);
+            n_line.moveTo(-100);
 
             if(object.part === "out") {
                 n_line.id = object.line + 0.01;
@@ -277,7 +307,6 @@ document.addEventListener('keydown', function(event) {
 
                 n_circle.line2 = object.line;
                 n_circle.line = n_line.id;
-
 
                 circle = getCircle(object.circle);
                 circle.arrow = n_circle.id;
@@ -297,6 +326,10 @@ document.addEventListener('keydown', function(event) {
     } else if(keyPressed === 68 && document.querySelector('input:focus') === null) {
         var activeObject = canvas.getActiveObject();
         if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
+            if(activeObject.part === "text") {
+                return
+            }
+
             var object = activeObject;
 
             if(activeObject.part === "in") {

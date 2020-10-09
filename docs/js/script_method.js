@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-10	Zen	Moving transition by dragging name
  * 2020-10-09	Zen	Updating display
  * 2020-10-09	Zen	Updating download and upload option
  * 2020-10-09	Zen	Name update correction
@@ -249,13 +250,16 @@ function addTransition() {
         strokeWidth: 4,
         radius: 4,
         id: ID_transition,
-        hasBorders: false,
-        hasControls: false,
+        lockScalingX: true,
+        lockScalingY: true,
+        lockRotation: true,
         n_type: 'transition',
         part: 'in',
         id_state: NaN,
         encapsuler: NaN,
         index: 0,
+        o_l: NaN,
+        o_t: NaN,
     });
 
     var line = new fabric.Line([ 60, 60, 60, 120 ], {
@@ -267,10 +271,6 @@ function addTransition() {
         strokeWidth: 2,
         id: ID_transition,
         selectable: false,
-        hasBorders: false,
-        hasControls: false,
-        hasBorders: false,
-        hasControls: false,
         lockScalingX: true,
         lockScalingY: true,
         lockRotation: true,
@@ -278,8 +278,12 @@ function addTransition() {
         lockMovementY: true,
         n_type: 'transition',
         part: 'segment',
-        next: null
+        next: null,
+        hoverCursor: 'cursor'
     });
+
+    canvas.moveTo(line, -100);
+    line.moveTo(-100);
 
     var text = new fabric.Text('function', {
         type: 'text',
@@ -289,14 +293,9 @@ function addTransition() {
         originX: 'center',
         originY: 'center',
         id: ID_transition,
-        selectable: false,
-        hasBorders: false,
-        hasControls: false,
         lockScalingX: true,
         lockScalingY: true,
         lockRotation: true,
-        lockMovementX: true,
-        lockMovementY: true,
         n_type: 'transition',
         part: 'text',
       });
@@ -317,8 +316,6 @@ function addTransition() {
         height: 15,
         fill: '#666',
         id: ID_transition,
-        hasBorders: false,
-        hasControls: false,
         lockScalingX: true,
         lockScalingY: true,
         lockRotation: true,
@@ -327,7 +324,14 @@ function addTransition() {
         id_state: NaN,
         encapsuler: NaN,
         index: 0,
+        o_l: NaN,
+        o_t: NaN,
     });
+
+    circle.o_l = text.left;
+    circle.o_t = text.top;
+    arrow.o_l = text.left;
+    arrow.o_t = text.top;
 
     line.circle = circle.id;
     line.arrow = arrow.id;
@@ -351,6 +355,33 @@ function addTransition() {
     ID_transition++;
 }
 
+function moveTransition(id, n_left, n_top) {
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "transition" && id === Math.trunc(obj.id)) {
+            if(obj.part === "in" || obj.part === "c") {
+                obj.set({left: obj.left+(n_left-obj.o_l), top: obj.top+(n_top-obj.o_t)});
+                moveLine(obj.line, obj.left, obj.top, null, null);
+                moveLine(obj.line2, null, null, obj.left, obj.top);
+            } else if(obj.part === "out") {
+                obj.set({left: obj.left+(n_left-obj.o_l), top: obj.top+(n_top-obj.o_t)});
+                moveLine(obj.line, null, null, obj.left, obj.top);
+            }
+            obj.setCoords();
+        }
+    });
+}
+
+function updateOldPos(id, o_l, o_t) {
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "transition" && id === Math.trunc(obj.id)) {
+            if(obj.part !== "segment") {
+                obj.o_l = o_l;
+                obj.o_t = o_t;
+            }
+        }
+    });
+}
+
 function updateText(id, type, new_text) {
     canvas.forEachObject(function(obj) {
         if(obj.n_type === type && obj.part === "text" && obj.id === id) {
@@ -364,6 +395,7 @@ function moveText(id, type, left, top) {
         if(obj.n_type === type && obj.part === "text" && obj.id === id) {
             obj.set({left: left, top: top});
         }
+        obj.setCoords();
     });
 }
 
@@ -400,6 +432,7 @@ function moveLine(id, x1, y1, x2, y2) {
                 } else {
                     obj.set({'x2': x2, 'y2': y2});
                 }
+                obj.setCoords();
             }
         });
     }
