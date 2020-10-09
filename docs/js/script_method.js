@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-09	Zen	Updating display
  * 2020-10-09	Zen	Updating download and upload option
  * 2020-10-09	Zen	Name update correction
  * 2020-10-08	Zen	Adding SM structure generation
@@ -54,8 +55,8 @@ function initGrid() {
             color = '#D9D9D9'
         }
 
-        canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type: 'line', n_type: 'grid', stroke: color, selectable: false }));
-        canvas.add(new fabric.Line([ 0, i * grid, canvasWidth, i * grid], { type: 'line', n_type: 'grid', stroke: color, selectable: false }))
+        canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type: 'line', n_type: 'grid', stroke: color, selectable: false, hoverCursor: 'cursor' }));
+        canvas.add(new fabric.Line([ 0, i * grid, canvasWidth, i * grid], { type: 'line', n_type: 'grid', stroke: color, selectable: false, hoverCursor: 'cursor' }))
     }
 }
 

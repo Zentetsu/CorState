@@ -47,8 +47,8 @@
 
 // Init GRID
 var canvas = new fabric.Canvas('canvas', { selection: false, preserveObjectStacking: true });
-var canvasWidth =  window.innerWidth * 0.98;
-var canvasHeight = window.innerHeight * 0.95;
+var canvasWidth =  document.getElementById("content").clientWidth;
+var canvasHeight = document.getElementById("content").clientHeight;
 var unitScale = 10;
 var grid = 15;
 var ID_transition = 0;
