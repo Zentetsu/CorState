@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-09	Zen	Updating download and upload option
  * 2020-10-09	Zen	Name update correction
  * 2020-10-08	Zen	Adding SM structure generation
  * 2020-10-08	Zen	Adding dynamic update transition encapsulation
@@ -53,8 +54,8 @@ function initGrid() {
             color = '#D9D9D9'
         }
 
-        canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type: 'line', stroke: color, selectable: false }));
-        canvas.add(new fabric.Line([ 0, i * grid, canvasWidth, i * grid], { type: 'line', stroke: color, selectable: false }))
+        canvas.add(new fabric.Line([ i * grid, 0, i * grid, canvasHeight], { type: 'line', n_type: 'grid', stroke: color, selectable: false }));
+        canvas.add(new fabric.Line([ 0, i * grid, canvasWidth, i * grid], { type: 'line', n_type: 'grid', stroke: color, selectable: false }))
     }
 }
 
@@ -370,7 +371,6 @@ function getText(id, type) {
 
     canvas.forEachObject(function(obj) {
         if(obj.part === "text" && obj.n_type === type && obj.id === id) {
-            // console.log("toto")
             val = obj;
         }
     });
@@ -383,7 +383,6 @@ function getState(id) {
 
     canvas.forEachObject(function(obj) {
         if(obj.part === "state" && obj.part ==="state" && obj.id === id) {
-            // console.log("toto")
             val = obj;
         }
     });
@@ -558,14 +557,23 @@ function dumpSM() {
 }
 
 function downloadingFile() {
-    var text = JSON.stringify(canvas.toJSON(['selectable', 'hasBorders', 'hasControls', 'lockScalingX', 'lockScalingY',
-                                             'lockRotation', 'lockMovementX', 'lockMovementY', 'id', 'text', 'n_type',
-                                             'part', 'line', 'line2', 'circle', 'arrow', 'f_circle', 'f_arrow', 'encapsuler',
-                                             'index']));
+    dictionary = canvas.toJSON(['selectable', 'hasBorders', 'hasControls', 'lockScalingX', 'lockScalingY',
+                                'lockRotation', 'lockMovementX', 'lockMovementY', 'id', 'text', 'n_type',
+                                'part', 'line', 'line2', 'circle', 'arrow', 'f_circle', 'f_arrow', 'encapsuler',
+                                'index']);
 
     var dump = dumpSM();
-    console.log(dump);
-    var file = "GFG.json";
+    var file = "StateMachine.json";
+
+    content = {"SM": dump, "display": {"version": dictionary["version"], "objects": new Array}};
+
+    Object.keys(dictionary['objects']).forEach(function(key) {
+        if(dictionary['objects'][key].n_type !== "grid") {
+            content["display"]["objects"].push(dictionary['objects'][key]);
+        }
+    });
+
+    var text = JSON.stringify(content);
 
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
@@ -584,5 +592,9 @@ function uploadingFile(event) {
 }
 
 function handleFileLoad(event) {
-  canvas.loadFromJSON(event.target.result);
+    fabric.util.enlivenObjects(JSON.parse(event.target.result)["display"]["objects"], function(objects) {
+        canvas.add(...objects);
+    });
+
+    document.getElementById("file-selector").value = "";
 }
