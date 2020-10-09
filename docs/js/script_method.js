@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-09	Zen	Name update correction
  * 2020-10-08	Zen	Adding SM structure generation
  * 2020-10-08	Zen	Adding dynamic update transition encapsulation
  * 2020-10-08	Zen	Adding dynamic update state encapsulation
@@ -364,11 +365,11 @@ function moveText(id, type, left, top) {
     });
 }
 
-function getText(id) {
+function getText(id, type) {
     var val;
 
     canvas.forEachObject(function(obj) {
-        if(obj.part === "text" && obj.id === id) {
+        if(obj.part === "text" && obj.n_type === type && obj.id === id) {
             // console.log("toto")
             val = obj;
         }
@@ -528,11 +529,11 @@ function dumpSM() {
         if(obj.n_type === "state" && obj.part === "state") {
             var s = {
                         "id":(obj.id),
-                        "action": getText(obj.text).text,
+                        "action": getText(obj.text, obj.n_type).text,
                         "encapsulation": obj.encapsulation
                     }
 
-            d["StateMachine"]["State"][getText(obj.text).text] = s;
+            d["StateMachine"]["State"][getText(obj.text, obj.n_type).text] = s;
         } else if(obj.n_type === "transition" && obj.part === "in") {
             var arrow = getArrow(obj.f_arrow);
 
@@ -540,7 +541,7 @@ function dumpSM() {
                         "id": obj.id,
                         "id_in": (isNaN(obj.id_state)) ? "inf" : obj.id_state,
                         "id_out": (isNaN(arrow.id_state)) ? "inf" : (isNaN(arrow.encapsuler)) ? arrow.id_state : -arrow.id_state,
-                        "evaluation": getText(obj.text).text
+                        "evaluation": getText(obj.text, obj.n_type).text
                     }
 
             if(t["id_in"] === "inf") {
@@ -548,7 +549,7 @@ function dumpSM() {
             } else if(t["id_out"] === "inf") {
                 d["StateMachine"]["Transition"]["out"] = t;
             } else {
-                d["StateMachine"]["Transition"][getText(obj.text).text] = t;
+                d["StateMachine"]["Transition"][getText(obj.text, obj.n_type).text] = t;
             }
         }
     });

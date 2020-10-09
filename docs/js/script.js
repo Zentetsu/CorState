@@ -158,13 +158,13 @@ canvas.on('object:modified', function(options) {
 
 canvas.on('selection:created', function(options) {
     console.log(options.target.n_type)
-    var txt = getText(options.target.text);
+    var txt = getText(options.target.text, options.target.n_type);
     document.getElementById("rename").value = txt.text;
 });
 
 canvas.on('selection:updated', function(options) {
     console.log(options.target.n_type)
-    var txt = getText(options.target.text);
+    var txt = getText(options.target.text, options.target.n_type);
     document.getElementById("rename").value = txt.text;
 });
 
