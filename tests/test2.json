@@ -1,68 +1,70 @@
 {
-    "path": "./tests/sm2.py",
-    "StateMachine": {
-        "Variable": {
-            "v1": 0,
-            "v2": false
-        },
-        "State": {
-            "s0": {
-                "id": 0,
-                "action": "fa1",
-                "encapsulation": false
+    "SM": {
+        "path": "./tests/sm2.py",
+        "StateMachine": {
+            "Variable": {
+                "v1": 0,
+                "v2": false
             },
-            "s1": {
-                "id": 1,
-                "action": "fa2",
-                "encapsulation": true
+            "State": {
+                "s0": {
+                    "id": 0,
+                    "action": "fa1",
+                    "encapsulation": false
+                },
+                "s1": {
+                    "id": 1,
+                    "action": "fa2",
+                    "encapsulation": true
+                },
+                "s3": {
+                    "id": 2,
+                    "action": "fa3",
+                    "encapsulation": false
+                },
+                "s4": {
+                    "id": 3,
+                    "action": "fa4",
+                    "encapsulation": false
+                }
             },
-            "s3": {
-                "id": 2,
-                "action": "fa3",
-                "encapsulation": false
-            },
-            "s4": {
-                "id": 3,
-                "action": "fa4",
-                "encapsulation": false
-            }
-        },
-        "Transition": {
-            "in": {
-                "id": 0,
-                "id_in": "inf",
-                "id_out": 0,
-                "evaluation": "ft1"
-            },
-            "out": {
-                "id": 1,
-                "id_in": 3,
-                "id_out": "inf",
-                "evaluation": "ft2"
-            },
-            "t0": {
-                "id": 2,
-                "id_in": 0,
-                "id_out": 1,
-                "evaluation": "ft3"
-            },
-            "t1": {
-                "id": 3,
-                "id_in": 1,
-                "id_out": 2,
-                "evaluation": "ft4"
-            },
-            "t2": {
-                "id": 4,
-                "id_in": 2,
-                "id_out": -1,
-                "evaluation": "ft4"
-            },
-            "t3": {
-                "id": 5,
-                "id_in": -1,
-                "id_out": 3,
-                "evaluation": "ft5"
+            "Transition": {
+                "in": {
+                    "id": 0,
+                    "id_in": "inf",
+                    "id_out": 0,
+                    "evaluation": "ft1"
+                },
+                "out": {
+                    "id": 1,
+                    "id_in": 3,
+                    "id_out": "inf",
+                    "evaluation": "ft2"
+                },
+                "t0": {
+                    "id": 2,
+                    "id_in": 0,
+                    "id_out": 1,
+                    "evaluation": "ft3"
+                },
+                "t1": {
+                    "id": 3,
+                    "id_in": 1,
+                    "id_out": 2,
+                    "evaluation": "ft4"
+                },
+                "t2": {
+                    "id": 4,
+                    "id_in": 2,
+                    "id_out": -1,
+                    "evaluation": "ft4"
+                },
+                "t3": {
+                    "id": 5,
+                    "id_in": -1,
+                    "id_out": 3,
+                    "evaluation": "ft5"
+                }
             }
         }
     }

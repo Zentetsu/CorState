@@ -158,6 +158,18 @@ def test_loadJSONFile():
         print("FAILED")
         assert False
 
+def test_loadJSONFile2():
+    print("load JSON file 2:", end=" ")
+    try:
+        sm = StateMachine("test")
+        sm.loadJSON("./tests/StateMachine.json")
+        sm.start()
+        print("SUCCESSED")
+        assert True
+    except:
+        print("FAILED")
+        assert False
+
 def test_runEncSM():
     print("Run Encapsuled StateMachine:", end=" ")
     try:
@@ -179,5 +191,6 @@ test_addTransitionToSM()
 test_simpleSM()
 test_runSimpleSM()
 test_loadJSONFile()
+test_loadJSONFile2()
 test_runEncSM()
 print("-"*10)
