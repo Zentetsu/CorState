@@ -271,6 +271,8 @@ function addTransition() {
         strokeWidth: 2,
         id: ID_transition,
         selectable: false,
+        hasBorders: false,
+        hasControls: false,
         lockScalingX: true,
         lockScalingY: true,
         lockRotation: true,
@@ -281,9 +283,6 @@ function addTransition() {
         next: null,
         hoverCursor: 'cursor'
     });
-
-    canvas.moveTo(line, -100);
-    line.moveTo(-100);
 
     var text = new fabric.Text('function', {
         type: 'text',

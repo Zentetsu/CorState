@@ -31,6 +31,7 @@
  * ----
  *
  * HISTORY:
+ * 2020-10-10	Zen	Line deletion correction
  * 2020-10-10	Zen	Moving transition by dragging name
  * 2020-10-09	Zen	Name update correction
  * 2020-10-08	Zen	Adding dynamic update transition encapsulation
@@ -193,7 +194,7 @@ canvas.on('selection:cleared', function(options) {
 
 onmouseup = function() {
     var activeObject = canvas.getActiveObject();
-    console.log(activeObject)
+    // console.log(activeObject)
     if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
         canvas.discardActiveObject().renderAll();
     }
@@ -280,6 +281,8 @@ document.addEventListener('keydown', function(event) {
                 stroke: '#666',
                 strokeWidth: 2,
                 selectable: false,
+                hasBorders: false,
+                hasControls: false,
                 lockScalingX: true,
                 lockScalingY: true,
                 lockRotation: true,
@@ -289,8 +292,6 @@ document.addEventListener('keydown', function(event) {
                 part: 'segment',
                 hoverCursor: 'cursor'
             });
-            canvas.moveTo(n_line, -100);
-            n_line.moveTo(-100);
 
             if(object.part === "out") {
                 n_line.id = object.line + 0.01;
@@ -339,8 +340,8 @@ document.addEventListener('keydown', function(event) {
             var del_circle = getCircle(object.circle)
 
             if(object.part === "out" && del_circle.part === "c") {
-                var del_line = getLine2(del_circle.line);
-                var circle = getCircle(del_circle.circle);
+                del_line = getLine2(del_circle.line);
+                circle = getCircle(del_circle.circle);
 
                 circle.arrow = object.id;
 
@@ -349,8 +350,8 @@ document.addEventListener('keydown', function(event) {
 
                 moveLine(object.line, null, null, object.left, object.top);
 
-                canvas.remove(del_circle);
                 canvas.remove(del_line);
+                canvas.remove(del_circle);
             }
 
             canvas.renderAll();
