@@ -224,9 +224,12 @@ class StateMachine:
             FileNotFoundError: raise an error the file leading to the functions definition doesn't exist
         """
         if not os.path.isfile(self._data["path"]):
-            raise FileNotFoundError
+            file_sm = open(self._data["path"], "w+")
+            # os.mknod(self._data['path'])
+            # raise FileNotFoundError
+        else:
+            file_sm = open(self._data["path"], "r+")
 
-        file_sm = open(self._data["path"], "r+")
         lines = file_sm.readlines()
 
         for v in self._data["StateMachine"]["Variable"].keys():
@@ -257,8 +260,15 @@ class StateMachine:
         """Method that loads JSON file
         """
         json_file = open(path)
+
+
         self._data = json.load(json_file)
         json_file.close()
+
+        if "SM" not in self._data.keys():
+            raise SMJSONIntegrityError("SM key not in JSON file")
+
+        self._data = self._data["SM"]
 
         self._checkJSONIntegrity()
         self._generateStateMachineStructure()

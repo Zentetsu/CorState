@@ -192,13 +192,13 @@ canvas.on('selection:cleared', function(options) {
     document.getElementById("rename").readOnly = true;
 });
 
-onmouseup = function() {
-    var activeObject = canvas.getActiveObject();
-    // console.log(activeObject)
-    if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
-        canvas.discardActiveObject().renderAll();
-    }
-};
+// onmouseup = function() {
+//     var activeObject = canvas.getActiveObject();
+//     // console.log(activeObject)
+//     if(activeObject !== undefined && activeObject !== null && activeObject.n_type === "transition") {
+//         canvas.discardActiveObject().renderAll();
+//     }
+// };
 
 // Actions
 var addingState = document.getElementById('addnewstate');

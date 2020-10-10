@@ -555,7 +555,7 @@ function deleteAllObjects() {
 }
 
 function dumpSM() {
-    var d = {"path": "", "StateMachine": {"Variable": {}, "State": {}, "Transition": {}}};
+    var d = {"path": "StateMachine.py", "StateMachine": {"Variable": {}, "State": {}, "Transition": {}}};
 
     canvas.forEachObject(function(obj) {
         if(obj.n_type === "state" && obj.part === "state") {
