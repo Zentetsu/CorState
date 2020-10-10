@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
+2020-10-10	Zen	Updating JSON file loading
 2020-09-18	Zen	Using inf value for first and last transition
 2020-09-17	Zen	Adding encapsulated state
 2020-09-12	Zen	Updating init by JSON file

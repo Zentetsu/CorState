@@ -38,7 +38,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CorState',
-    version='0.1.1-dev0',
+    version='0.1.2-dev0',
     author='Zentetsu',
     packages=find_packages(exclude=['tests*']),
     license='GPLv3',
