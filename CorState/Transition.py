@@ -5,8 +5,8 @@ Author: Zentetsu
 
 ----
 
-Last Modified:
-Modified By:
+Last Modified: Fri Oct 23 2020
+Modified By: Zentetsu
 
 ----
 
@@ -42,21 +42,22 @@ HISTORY:
 from .CorStateError import *
 from math import inf
 import importlib
+import sys, os
 
 
 class Transition:
     """Transition class
     """
-    _nb_transition = 0
+    __nb_transition = 0
 
     def __init__(self):
         """Class constructor
         """
-        self._id = Transition._nb_transition
-        Transition._nb_transition = Transition._nb_transition + 1
+        self.__id = Transition.__nb_transition
+        Transition.__nb_transition = Transition.__nb_transition + 1
 
-        self._ioID = None
-        self._evaluation = None
+        self.__ioID = None
+        self.__evaluation = None
 
     def getID(self) -> int:
         """Method that returns Transition ID
@@ -64,7 +65,7 @@ class Transition:
         Returns:
             int: Transition ID
         """
-        return self._id
+        return self.__id
 
     def initByTFF(self, tff:dict, module:str):
         """Method that initialzes a Transition from a JSON file
@@ -73,31 +74,20 @@ class Transition:
             tff (dict): state from file
             module (str): module information
         """
-        module_name = module
+        sys.path.append(os.path.dirname(module))
+        module_name = os.path.splitext(os.path.basename(module))[0]
+        self.__mod = importlib.import_module(module_name)
 
-        if module_name[len(module_name)-3:] != ".py":
-            print("ERROR")
-
-        if module_name[:2] != "./":
-            print("ERROR")
-
-        module_name = module_name[2:]
-        module_name = module_name[:len(module_name)-3]
-        module_name = module_name.replace('/', '.')
-
-        self.mod = importlib.import_module(module_name, module)
-        globals().update(self.mod.__dict__)
-
-        self._id = tff["id"]
+        self.__id = tff["id"]
 
         if tff["id_in"] == "inf":
-            self._ioID = (inf, tff["id_out"])
+            self.__ioID = (inf, tff["id_out"])
         elif tff["id_out"] == "inf":
-            self._ioID = (tff["id_in"], -inf)
+            self.__ioID = (tff["id_in"], -inf)
         else:
-            self._ioID = (tff["id_in"], tff["id_out"])
+            self.__ioID = (tff["id_in"], tff["id_out"])
 
-        self._evaluation = getattr(self.mod, tff["evaluation"])
+        self.__evaluation = getattr(self.__mod, tff["evaluation"])
 
     def setInOutID(self, ini:int, outi:int):
         """Method that initializes the in and out state id
@@ -106,7 +96,7 @@ class Transition:
             ini (int): in state id
             outi (int): out state id
         """
-        self._ioID = (ini, outi)
+        self.__ioID = (ini, outi)
 
     def getInOutID(self) -> (int, int):
         """Method that returns the in and out state id
@@ -114,7 +104,7 @@ class Transition:
         Returns:
             (int, int): tuple of in and out state id
         """
-        return self._ioID
+        return self.__ioID
 
     def addEvaluation(self, evaluation):
         """Method that evaluates a condition to allow the State Machien to move to the next state
@@ -122,7 +112,7 @@ class Transition:
         Args:
             evaluation ([type]): Function called to evaluate the possibilite to move to the next state
         """
-        self._evaluation = evaluation
+        self.__evaluation = evaluation
 
     def evaluate(self) -> bool:
         """Meyhod that runs the evalaute function
@@ -130,7 +120,7 @@ class Transition:
         Returns:
             bool: Evaluation result
         """
-        return self._evaluation()
+        return self.__evaluation()
 
     def __repr__(self) -> str:
         """Redefined method to print value of the Transition class instance
@@ -138,6 +128,6 @@ class Transition:
         Returns:
             str: printable value of Transition class instance
         """
-        s = "Transition id: " + self._id.__repr__() + "; (in, out): " + self._ioID.__repr__()
+        s = "Transition id: " + self.__id.__repr__() + "; (in, out): " + self.__ioID.__repr__()
 
         return s

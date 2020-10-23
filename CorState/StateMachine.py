@@ -5,8 +5,8 @@ Author: Zentetsu
 
 ----
 
-Last Modified:
-Modified By:
+Last Modified: Thu Oct 22 2020
+Modified By: Zentetsu
 
 ----
 
@@ -55,12 +55,12 @@ class StateMachine:
     def __init__(self, name: str):
         """Class constructor
         """
-        self._name = name
-        self._states = {}
-        self._transitions = {}
-        self._states_stack = []
+        self.__name = name
+        self.__states = {}
+        self.__transitions = {}
+        self.__states_stack = []
 
-        self._data = None
+        self.__data = None
 
     def getName(self) -> str:
         """Method that returns StateMachine name
@@ -68,12 +68,12 @@ class StateMachine:
         Returns:
             str: StateMachine name
         """
-        return self._name
+        return self.__name
 
     def start(self):
         """Method that launches the state StateMachine
         """
-        self._checkStateMachineIntegrity()
+        self.__checkStateMachineIntegrity()
 
         _stateID = inf
         _breaked = True
@@ -82,28 +82,28 @@ class StateMachine:
         while _breaked:
             _breaked = False
 
-            for tr in self._transitions.keys():
-                if self._transitions[tr].getInOutID()[0] == _stateID and self._transitions[tr].evaluate():
-                    _stateID = self._transitions[tr].getInOutID()[1]
+            for tr in self.__transitions.keys():
+                if self.__transitions[tr].getInOutID()[0] == _stateID and self.__transitions[tr].evaluate():
+                    _stateID = self.__transitions[tr].getInOutID()[1]
 
-                    if len(self._states_stack) > 0 and -_stateID in self._states_stack:
-                        while len(self._states_stack) > 0:
-                            if self._states_stack[-1] != -_stateID:
-                                del self._states_stack[-1]
+                    if len(self.__states_stack) > 0 and -_stateID in self.__states_stack:
+                        while len(self.__states_stack) > 0:
+                            if self.__states_stack[-1] != -_stateID:
+                                del self.__states_stack[-1]
                             else:
                                 break
 
-                        del self._states_stack[-1]
+                        del self.__states_stack[-1]
                         _next_transition = True
 
                     _breaked = True
                     break
 
             if _breaked and _stateID != -inf and not _next_transition:
-                if self._states[_stateID].getEncapsulation():
-                    self._states_stack.append(_stateID)
+                if self.__states[_stateID].getEncapsulation():
+                    self.__states_stack.append(_stateID)
 
-                self._states[_stateID].run()
+                self.__states[_stateID].run()
             elif _next_transition:
                 _next_transition = False
 
@@ -131,7 +131,7 @@ class StateMachine:
         else:
             raise SMAddingStateError
 
-        self._states[_state.getID()] = _state
+        self.__states[_state.getID()] = _state
 
     def removeState(self, state_id:int):
         """Method which removes a state from the StateMachine
@@ -139,7 +139,7 @@ class StateMachine:
         Args:
             state_id (int): state id
         """
-        del self._states[state_id]
+        del self.__states[state_id]
 
     def getStates(self):
         """Method that returns States dict
@@ -147,7 +147,7 @@ class StateMachine:
         Returns:
             dict: States dict
         """
-        return self._states
+        return self.__states
 
     def addTransition(self, value=None, path:str=None):
         """Method that adds a transition to the StateMachine
@@ -170,7 +170,7 @@ class StateMachine:
         else:
             raise SMAddingTransitionError
 
-        self._transitions[_transition.getID()] = _transition
+        self.__transitions[_transition.getID()] = _transition
 
     def removeTransition(self, transition_id:int):
         """Method which removes a Transition from the Transition Machine
@@ -178,7 +178,7 @@ class StateMachine:
         Args:
             transition_id (int): Transition id
         """
-        del self._transitions[transition_id]
+        del self.__transitions[transition_id]
 
     def getTransitions(self):
         """Method that returns Transitions dict
@@ -186,76 +186,76 @@ class StateMachine:
         Returns:
             [type]: Transition dict
         """
-        return self._transitions
+        return self.__transitions
 
-    def _checkStateMachineIntegrity(self):
+    def __checkStateMachineIntegrity(self):
         """Method that checks the integrity of the StateMachine
         """
-        if [self._transitions[t].getInOutID()[0] == inf and self._transitions[t].getInOutID()[1] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+        if [self.__transitions[t].getInOutID()[0] == inf and self.__transitions[t].getInOutID()[1] in self.__states.keys() for t in self.__transitions.keys()].count(True) != 1:
             raise SMIntegrityError("Initial")
 
-        if [self._transitions[t].getInOutID()[1] == -inf and self._transitions[t].getInOutID()[0] in self._states.keys() for t in self._transitions.keys()].count(True) != 1:
+        if [self.__transitions[t].getInOutID()[1] == -inf and self.__transitions[t].getInOutID()[0] in self.__states.keys() for t in self.__transitions.keys()].count(True) != 1:
             raise SMIntegrityError("Final")
 
-    def _checkJSONIntegrity(self):
+    def __checkJSONIntegrity(self):
         """Method that checks the JSON file integrity
 
         Raises:
             SMJSONIntegrityError: raise an error when an element is not present into the JSON file
         """
-        if not all([k in self._data.keys() for k in ["path", "StateMachine"]]):
-            raise SMJSONIntegrityError("module_name, path and/or StateMachine values of JSON file")
+        if not all([k in self.__data.keys() for k in ["path", "StateMachine"]]):
+            raise SMJSONIntegrityError("module__name, path and/or StateMachine values of JSON file")
 
-        if not all([k in self._data["StateMachine"].keys() for k in ["Variable", "State", "Transition"]]):
+        if not all([k in self.__data["StateMachine"].keys() for k in ["Variable", "State", "Transition"]]):
             raise SMJSONIntegrityError("Variable, State and/or Transition values of StateMachine")
 
-        if len(self._data["StateMachine"]["State"].keys()) > 0 and not all([k in self._data["StateMachine"]["State"][s].keys() for k in ["id", "action", "encapsulation"] for s in self._data["StateMachine"]["State"].keys()]):
+        if len(self.__data["StateMachine"]["State"].keys()) > 0 and not all([k in self.__data["StateMachine"]["State"][s].keys() for k in ["id", "action", "encapsulation"] for s in self.__data["StateMachine"]["State"].keys()]):
             raise SMJSONIntegrityError("id and/or action values of a specific State")
 
-        if not all([t in self._data["StateMachine"]["Transition"].keys() for t in ["in", "out"]]):
+        if not all([t in self.__data["StateMachine"]["Transition"].keys() for t in ["in", "out"]]):
             raise SMJSONIntegrityError("in and/or out values of Transition")
 
-        if not all([k in self._data["StateMachine"]["Transition"][t].keys() for k in ["id_in", "id_out", "evaluation"] for t in self._data["StateMachine"]["Transition"].keys()]):
+        if not all([k in self.__data["StateMachine"]["Transition"][t].keys() for k in ["id_in", "id_out", "evaluation"] for t in self.__data["StateMachine"]["Transition"].keys()]):
             raise SMJSONIntegrityError("id_in, id_out and/or evaluation of a specific Transition")
 
-    def _generateStateMachineStructure(self):
+    def __generateStateMachineStructure(self):
         """Method that generates StateMachien structure
 
         Raises:
             FileNotFoundError: raise an error the file leading to the functions definition doesn't exist
         """
-        if not os.path.isfile(self._data["path"]):
-            file_sm = open(self._data["path"], "w+")
-            # os.mknod(self._data['path'])
+        if not os.path.isfile(self.__data["path"]):
+            file_sm = open(self.__data["path"], "w+")
+            # os.mknod(self.__data['path'])
             # raise FileNotFoundError
         else:
-            file_sm = open(self._data["path"], "r+")
+            file_sm = open(self.__data["path"], "r+")
 
         lines = file_sm.readlines()
 
-        for v in self._data["StateMachine"]["Variable"].keys():
+        for v in self.__data["StateMachine"]["Variable"].keys():
             if True not in [v in l for l in lines]:
-                file_sm.write(v + " = " + str(self._data["StateMachine"]["Variable"][v]) + "\n")
+                file_sm.write(v + " = " + str(self.__data["StateMachine"]["Variable"][v]) + "\n")
 
-        for s in self._data["StateMachine"]["State"].keys():
-            if True not in ["def " + self._data["StateMachine"]["State"][s]["action"] in l for l in lines]:
-                file_sm.write("def " + self._data["StateMachine"]["State"][s]["action"] +"():\n\t#TODO\n\tpass\n\n")
+        for s in self.__data["StateMachine"]["State"].keys():
+            if True not in ["def " + self.__data["StateMachine"]["State"][s]["action"] in l for l in lines]:
+                file_sm.write("def " + self.__data["StateMachine"]["State"][s]["action"] +"():\n\t#TODO\n\tpass\n\n")
 
-            # self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
+            # self.addState(self.__data["StateMachine"]["State"][s], self.__data["path"])
 
-        for t in self._data["StateMachine"]["Transition"].keys():
-            if True not in ["def " + self._data["StateMachine"]["Transition"][t]["evaluation"] in l for l in lines]:
-                file_sm.write("def " + self._data["StateMachine"]["Transition"][t]["evaluation"] +"():\n\t#TODO\n\tpass\n\n")
+        for t in self.__data["StateMachine"]["Transition"].keys():
+            if True not in ["def " + self.__data["StateMachine"]["Transition"][t]["evaluation"] in l for l in lines]:
+                file_sm.write("def " + self.__data["StateMachine"]["Transition"][t]["evaluation"] +"():\n\t#TODO\n\tpass\n\n")
 
-            # self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
+            # self.addTransition(self.__data["StateMachine"]["Transition"][t], self.__data["path"])
 
         file_sm.close()
 
-        for s in self._data["StateMachine"]["State"].keys():
-            self.addState(self._data["StateMachine"]["State"][s], self._data["path"])
+        for s in self.__data["StateMachine"]["State"].keys():
+            self.addState(self.__data["StateMachine"]["State"][s], self.__data["path"])
 
-        for t in self._data["StateMachine"]["Transition"].keys():
-            self.addTransition(self._data["StateMachine"]["Transition"][t], self._data["path"])
+        for t in self.__data["StateMachine"]["Transition"].keys():
+            self.addTransition(self.__data["StateMachine"]["Transition"][t], self.__data["path"])
 
     def loadJSON(self, path:str):
         """Method that loads JSON file
@@ -263,18 +263,18 @@ class StateMachine:
         json_file = open(path)
 
 
-        self._data = json.load(json_file)
+        self.__data = json.load(json_file)
         json_file.close()
 
-        if "SM" not in self._data.keys():
+        if "SM" not in self.__data.keys():
             raise SMJSONIntegrityError("SM key not in JSON file")
 
-        self._data = self._data["SM"]
+        self.__data = self.__data["SM"]
 
-        self._checkJSONIntegrity()
-        self._generateStateMachineStructure()
+        self.__checkJSONIntegrity()
+        self.__generateStateMachineStructure()
 
-    def _dumpJSON(self, name:str):
+    def __dumpJSON(self, name:str):
         """Method that saves StateMachine  to a JSON file
         """
         pass
@@ -285,12 +285,12 @@ class StateMachine:
         Returns:
             str: printable value of StateMachine class instance
         """
-        s = "State Machine name: " + self._name + "\n"
+        s = "State Machine name: " + self.__name + "\n"
 
-        for st in self._states.keys():
-            s += self._states[st].__repr__() + "\n"
+        for st in self.__states.keys():
+            s += self.__states[st].__repr__() + "\n"
 
-        for tr in self._transitions.keys():
-            s += self._transitions[tr].__repr__() + "\n"
+        for tr in self.__transitions.keys():
+            s += self.__transitions[tr].__repr__() + "\n"
 
         return s

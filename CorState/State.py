@@ -5,8 +5,8 @@ Author: Zentetsu
 
 ----
 
-Last Modified:
-Modified By:
+Last Modified: Thu Oct 22 2020
+Modified By: Zentetsu
 
 ----
 
@@ -41,21 +41,22 @@ HISTORY:
 
 from .CorStateError import *
 import importlib
+import sys, os
 
 
 class State:
     """State class
     """
-    _nb_state = 0
+    __nb_state = 0
 
     def __init__(self):
         """Class constructor
         """
-        self._id = State._nb_state
-        State._nb_state = State._nb_state + 1
+        self.__id = State.__nb_state
+        State.__nb_state = State.__nb_state + 1
 
-        self._action = None
-        self._encapsulation = False
+        self.__action = None
+        self.__encapsulation = False
 
     def getID(self) -> int:
         """Method that returns State ID
@@ -63,7 +64,7 @@ class State:
         Returns:
             int: State ID
         """
-        return self._id
+        return self.__id
 
     def initBySFF(self, sff:dict, module:str):
         """Method that initialzes a State from a JSON file
@@ -72,25 +73,13 @@ class State:
             sff (dict): state from file
             module (str): module information
         """
-        module_name = module
+        sys.path.append(os.path.dirname(module))
+        module_name = os.path.splitext(os.path.basename(module))[0]
+        self.__mod = importlib.import_module(module_name)
 
-        if module_name[len(module_name)-3:] != ".py":
-            raise SMExtensionName
-
-        if module_name[:2] != "./":
-            raise SMRelativePathFile
-
-        module_name = module_name[2:]
-        module_name = module_name[:len(module_name)-3]
-        module_name = module_name.replace('/', '.')
-
-
-        self.mod = importlib.import_module(module_name, module)
-        globals().update(self.mod.__dict__)
-
-        self._id = sff["id"]
-        self._action = getattr(self.mod, sff["action"])
-        self._encapsulation = sff['encapsulation']
+        self.__id = sff["id"]
+        self.__action = getattr(self.__mod, sff["action"])
+        self.__encapsulation = sff['encapsulation']
 
     def addAction(self, action):
         """Method that adds action to this state
@@ -98,18 +87,18 @@ class State:
         Args:
             action ([type]): action that will be executed by this state
         """
-        self._action = action
+        self.__action = action
 
     def run(self):
         """Method that will run the action defined to this state
         """
-        self._action()
+        self.__action()
 
     def setEncapsulation(self, value:bool):
-        self._encapsulation = value
+        self.__encapsulation = value
 
     def getEncapsulation(self) -> bool:
-        return self._encapsulation
+        return self.__encapsulation
 
     def __repr__(self) -> str:
         """Redefined method to print value of the State class instance
@@ -117,6 +106,6 @@ class State:
         Returns:
             str: printable value of State class instance
         """
-        s = "State id: " + str(self._id)
+        s = "State id: " + str(self.__id)
 
         return s
