@@ -5,7 +5,7 @@ Author: Zentetsu
 
 ----
 
-Last Modified: Thu Oct 22 2020
+Last Modified: Sun Oct 25 2020
 Modified By: Zentetsu
 
 ----
@@ -38,7 +38,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CorState',
-    version='0.1.2-dev0',
+    version='0.1.3-dev0',
     author='Zentetsu',
     packages=find_packages(exclude=['tests*']),
     license='GPLv3',
