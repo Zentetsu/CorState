@@ -630,4 +630,22 @@ function handleFileLoad(event) {
     });
 
     document.getElementById("file-selector").value = "";
+
+    updateID();
+}
+
+function updateID() {
+    var _sid = 0;
+    var _tid = 0;
+
+    canvas.forEachObject(function(obj) {
+        if(obj.n_type === "state" && obj.id > _sid) {
+            _sid = obj.id;
+        } else if(obj.n_type === "transition" && obj.id > _tid) {
+            _tid = obj.id;
+        }
+    });
+
+    ID_state = _sid + 1;
+    ID_transition = _tid + 1;
 }
