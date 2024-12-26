@@ -1,0 +1,36 @@
+cmake_minimum_required(VERSION 3.11)
+
+# Define folders
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/project/GSM/src)
+set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/GSM/include)
+set(BUILD_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
+
+# GSM files
+set(GSM_HEADER
+    ${CMAKE_CURRENT_BINARY_DIR}/../version.h
+    ${INCLUDE_DIR}/generateStateMachine.h
+)
+
+set(GSM_SOURCE
+    ${SRC_DIR}/generateStateMachine.c
+    ${SRC_DIR}/main_GSM.c
+)
+
+# Define the executable
+add_executable(generateStateMachine ${GSM_HEADER} ${GSM_SOURCE})
+add_dependencies(generateStateMachine install_jsonc)
+target_link_libraries(generateStateMachine json-c::json-c)
+
+set_target_properties(generateStateMachine PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${BUILD_BIN_DIR}
+)
+
+# Set RPATH for dynamic linking
+set_target_properties(generateStateMachine PROPERTIES
+    INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib
+)
+
+# Install the executable
+install(TARGETS generateStateMachine
+    RUNTIME DESTINATION bin
+)

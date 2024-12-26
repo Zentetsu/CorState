@@ -1,0 +1,46 @@
+{
+    "SM": {
+        "path": [
+            "test.h",
+            "test.c"
+        ],
+        "StateMachine": {
+            "Variable": {
+                "v1": 0,
+                "v2": false
+            },
+            "State": {
+                "s0": {
+                    "id": 0,
+                    "action": "fa_1_1",
+                    "encapsulation": false
+                },
+                "s1": {
+                    "id": 1,
+                    "action": "fa_1_2",
+                    "encapsulation": false
+                }
+            },
+            "Transition": {
+                "in": {
+                    "id": 0,
+                    "id_in": "inf",
+                    "id_out": 0,
+                    "evaluation": "ft_1_1"
+                },
+                "out": {
+                    "id": 1,
+                    "id_in": 1,
+                    "id_out": "inf",
+                    "evaluation": "ft_1_2"
+                },
+                "t0": {
+                    "id": 2,
+                    "id_in": 0,
+                    "id_out": 1,
+                    "evaluation": "ft_1_3"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.11)
+project(CorState)
+
+set(PROJECT_VERSION_MAJOR 1)
+set(PROJECT_VERSION_MINOR 0)
+set(PROJECT_VERSION_PATCH 0)
+
+set_target_properties(PROPERTIES
+    VERSION 1.0.0
+    SOVERSION 1
+)
+
+# compiler and flags
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wuninitialized -std=c11 -O2")
+
+# Define folders
+# set(TEST_DIR ${CMAKE_SOURCE_DIR}/tests)
+set(BUILD_LIB_DIR ${CMAKE_BINARY_DIR}/lib)
+
+# Output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_LIB_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_LIB_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BUILD_LIB_DIR})
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/project/version.h
+)
+
+# Include ExternalProject module
+add_subdirectory(dependencies)
+add_subdirectory(project)
