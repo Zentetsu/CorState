@@ -1,12 +1,12 @@
-'''
+"""
 File: __init__.py
 Created Date: Sunday, July 0th 2020, 12:05:24 am
 Author: Zentetsu
 
 ----
 
-Last Modified:
-Modified By:
+Last Modified: Thu Dec 26 2024
+Modified By: Zentetsu
 
 ----
 
@@ -31,6 +31,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
-'''
-
-
+"""  # noqa

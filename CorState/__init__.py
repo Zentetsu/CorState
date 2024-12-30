@@ -1,11 +1,11 @@
-'''
+"""
 File: __init_.py
 Created Date: Sunday, July 0th 2020, 12:05:46 am
 Author: Zentetsu
 
 ----
 
-Last Modified: Thu Oct 22 2020
+Last Modified: Thu Dec 26 2024
 Modified By: Zentetsu
 
 ----
@@ -31,8 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
-'''
-
+"""  # noqa
 
 from .State import State
 from .Transition import Transition
