@@ -71,7 +71,7 @@ void initStByTFF(State *state, struct json_object *parsed_transition) {
     dlclose(handle);
 }
 
-void setStAction(State *state, void (*action)()) { state->action = action; }
+void setStAction(State *state, void (*fct)()) { state->action = fct; }
 
 void setStEncapsulatedModule(State *state, char encapsulated_module) { state->encapsulated_module = encapsulated_module; }
 

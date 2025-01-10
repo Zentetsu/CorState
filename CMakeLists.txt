@@ -13,6 +13,7 @@ set_target_properties(PROPERTIES
 # compiler and flags
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wuninitialized -std=c11 -O2")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
 
 # Define folders
 # set(TEST_DIR ${CMAKE_SOURCE_DIR}/tests)

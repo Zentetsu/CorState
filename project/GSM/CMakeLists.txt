@@ -7,7 +7,7 @@ set(BUILD_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
 
 # GSM files
 set(GSM_HEADER
-    ${CMAKE_CURRENT_BINARY_DIR}/../version.h
+    ${CMAKE_SOURCE_DIR}/project/version.h
     ${INCLUDE_DIR}/generateStateMachine.h
 )
 

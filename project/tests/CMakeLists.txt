@@ -20,12 +20,12 @@ add_executable(test_dict
 )
 
 add_executable(test_CorState
-    ${INCLUDE_DIR}/test_CorState.h
     ${INCLUDE_DIR}/test_1.h
     ${INCLUDE_DIR}/test_2.h
-    ${SRC_DIR}/test_CorState.c
+    ${INCLUDE_DIR}/test_CorState.h
     ${SRC_DIR}/test_1.c
     ${SRC_DIR}/test_2.c
+    ${SRC_DIR}/test_CorState.c
     ${SRC_DIR}/main_CorState.c
 )
 
@@ -38,6 +38,7 @@ add_dependencies(test_CorState install_jsonc install_unity install_corstate)
 target_link_libraries(test_list unity CorState)
 target_link_libraries(test_dict unity CorState)
 target_link_libraries(test_CorState unity CorState)
+
 add_test(NAME run_list COMMAND test_list)
 add_test(NAME run_dict COMMAND test_dict)
 add_test(NAME run_CorState COMMAND test_CorState)

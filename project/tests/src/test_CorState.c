@@ -164,7 +164,9 @@ void test_runSimpleSM() {
     TEST_ASSERT_EQUAL_INT(1, getDictSize(sm->states));
     TEST_ASSERT_EQUAL_INT(2, getDictSize(sm->transitions));
 
-    start(sm);
+    int res = start(sm);
+
+    TEST_ASSERT_EQUAL_INT(0, res);
 
     freeStateMachine(&sm);
     st = NULL;
@@ -195,7 +197,9 @@ void test_loadJSONFile() {
     TEST_ASSERT_EQUAL_INT(2, getDictSize(sm->states));
     TEST_ASSERT_EQUAL_INT(3, getDictSize(sm->transitions));
 
-    start(sm);
+    int res = start(sm);
+
+    TEST_ASSERT_EQUAL_INT(0, res);
 
     freeStateMachine(&sm);
 }
