@@ -1,12 +1,3 @@
-/*
- * Filename: /Users/thibautmorant/Documents/GITHUB/API/CorState/project/tests/include/test_CorState.h
- * Path: /Users/thibautmorant/Documents/GITHUB/API/CorState/tests/include
- * Created Date: Sunday, December 22nd 2024, 2:11:15 pm
- * Author: Zentetsu
- *
- * Copyright (c) 2024 Zentetsu
- */
-
 #ifndef TEST_CORSTATE_H
 #define TEST_CORSTATE_H
 

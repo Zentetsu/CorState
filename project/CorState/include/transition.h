@@ -1,5 +1,5 @@
 /*
- * File: transition.c
+ * File: transition.h
  * Created Date: Friday, December 20th 2024, 2:21:53 pm
  * Author: Zentetsu
  *
@@ -33,6 +33,7 @@
  * Date      	By	Comments
  * ----------	---	---------------------------------------------------------
  */
+
 #ifndef TRANSITION_H
 #define TRANSITION_H
 

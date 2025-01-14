@@ -1,5 +1,15 @@
 {
     "files.associations": {
         "bitset": "c"
-    }
+    },
+    "C_Cpp.default.includePath": [
+        "/home/zentetsu/miniconda3/envs/Project/include/"
+    ],
+    "cmake.configureOnOpen": false,
+    "cmake.configureOnEdit": false,
+    "cmake.automaticReconfigure": false,
+    "editor.formatOnSave": true,
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "off",
+    "cmake.ignoreCMakeListsMissing": true
 }

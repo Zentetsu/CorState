@@ -1,5 +1,5 @@
 /*
- * File: state.c
+ * File: state.h
  * Created Date: Friday, December 20th 2024, 2:21:58 pm
  * Author: Zentetsu
  *

@@ -1,11 +1,3 @@
-/*
- * Filename: generateStateMachien.h
- * Created Date: Wednesday, December 18th 2024, 8:42:57 pm
- * Author: Zentetsu
- *
- * Copyright (c) 2024 Zentetsu
- */
-
 #ifndef GENERATE_STATE_MACHINE_H
 #define GENERATE_STATE_MACHINE_H
 

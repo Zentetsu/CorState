@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(json-c REQUIRED)
+
+set(CorState_LIBRARIES CorState::CorState)
+set(CorState_INCLUDE_DIRS "@CMAKE_INSTALL_PREFIX@/include/CorState")
+
+include("${CMAKE_CURRENT_LIST_DIR}/CorStateTargets.cmake")
+
+check_required_components("CorState")

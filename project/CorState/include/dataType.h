@@ -1,12 +1,3 @@
-/*
- * Filename: /Users/thibautmorant/Documents/GITHUB/API/CorState/project/CorState/include/dataType.h
- * Path: /Users/thibautmorant/Documents/GITHUB/API/CorState/project/CorState/include
- * Created Date: Tuesday, December 24th 2024, 4:08:15 pm
- * Author: Zentetsu
- *
- * Copyright (c) 2024 Zentetsu
- */
-
 #ifndef DATA_TYPE_H
 #define DATA_TYPE_H
 

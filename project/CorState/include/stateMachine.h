@@ -1,5 +1,5 @@
 /*
- * File: stateMachine.c
+ * File: stateMachine.h
  * Created Date: Friday, December 20th 2024, 2:21:44 pm
  * Author: Zentetsu
  *
@@ -33,6 +33,7 @@
  * Date      	By	Comments
  * ----------	---	---------------------------------------------------------
  */
+
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
 

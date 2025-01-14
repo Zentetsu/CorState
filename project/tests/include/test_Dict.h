@@ -1,12 +1,3 @@
-/*
- * Filename: /Users/thibautmorant/Documents/GITHUB/API/CorState/tests/include/test_Dict.h
- * Path: /Users/thibautmorant/Documents/GITHUB/API/CorState/tests/include
- * Created Date: Sunday, December 22nd 2024, 2:11:35 pm
- * Author: Zentetsu
- *
- * Copyright (c) 2024 Zentetsu
- */
-
 #ifndef TEST_DICT_H
 #define TEST_DICT_H
 
