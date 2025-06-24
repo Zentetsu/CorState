@@ -47,8 +47,6 @@ def ft_2_0():
 def ft_2_1():
     # TODO
     # print("ft_2_1")
-    global test_1
-
     return test_1
 
 
@@ -61,8 +59,6 @@ def ft_2_2():
 def ft_2_3():
     # TODO
     # print("ft_2_3")
-    global test_3
-
     return test_3
 
 
@@ -75,8 +71,6 @@ def ft_2_4():
 def ft_2_5():
     # TODO
     # print("ft_2_5")
-    global test_5
-
     return test_5
 
 
