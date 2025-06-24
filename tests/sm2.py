@@ -1,36 +1,86 @@
 v1 = 0
 v2 = False
-def fa1():
-	# print("fa1")
-	pass
 
-def fa2():
-	# print("fa2")
-	pass
+global test_1, test_3, test_5
+test_1, test_3, test_5 = 0, 0, 0
 
-def fa3():
-	# print("fa3")
-	pass
 
-def fa4():
-	# print("fa4")
-	pass
+def fa_2_0():
+    # TODO
+    # print("fa_2_0")
+    global test_1
+    test_1 = 1
 
-def ft1():
-	return True
 
-def ft2():
-	return True
+def fa_2_1():
+    # TODO
+    # print("fa_2_1")
+    pass
 
-def ft3():
-	return True
 
-def ft4():
-	return True
+def fa_2_2():
+    # TODO
+    # print("fa_2_2")
+    global test_3
+    test_3 = 1
 
-def ft4():
-	return True
 
-def ft5():
-	return True
+def fa_2_3():
+    # TODO
+    # print("fa_2_3")
+    global test_5
+    test_5 = 1
 
+
+def fa_2_4():
+    # TODO
+    # print("fa_2_4")
+    pass
+
+
+def ft_2_0():
+    # TODO
+    # print("ft_2_0")
+    return True
+
+
+def ft_2_1():
+    # TODO
+    # print("ft_2_1")
+    global test_1
+
+    return test_1
+
+
+def ft_2_2():
+    # TODO
+    # print("ft_2_2")
+    return True
+
+
+def ft_2_3():
+    # TODO
+    # print("ft_2_3")
+    global test_3
+
+    return test_3
+
+
+def ft_2_4():
+    # TODO
+    # print("ft_2_4")
+    return True
+
+
+def ft_2_5():
+    # TODO
+    # print("ft_2_5")
+    global test_5
+
+    return test_5
+
+
+def ft_2_6():
+    # TODO
+    # print("ft_2_6")
+    return True
