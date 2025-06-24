@@ -36,37 +36,53 @@
 
 #include "../include/test_2.h"
 
+int test_1 = 0;
+int test_3 = 0;
+int test_5 = 0;
+
 /* STATE DEFINITION */
-void fa_2_1() { /* printf("fa1\n"); */ }
+void fa_2_0() { /* printf("State fa_2_0 executed\n"); */ test_1 = 1; }
 
-void fa_2_2() { /* printf("fa2\n"); */ }
+void fa_2_1() { /* printf("State fa_2_1 executed\n"); */ }
 
-void fa_2_3() { /* printf("fa3\n"); */ }
+void fa_2_2() { /* printf("State fa_2_2 executed\n"); */ test_3 = 1; }
 
-void fa_2_4() { /* printf("fa4\n"); */ }
+void fa_2_3() { /* printf("State fa_2_3 executed\n"); */ test_5 = 1; }
+
+void fa_2_4() { /* printf("State fa_2_4 executed\n"); */ }
 
 /* TRANSITION DEFINITION */
-int ft_2_1() {
-    /* printf("ft1\n"); */
+int ft_2_0() {
+    /* printf("Transition ft_2_0 executed\n"); */
     return 1;
 }
 
+int ft_2_1() {
+    /* printf("Transition ft_2_1 executed\n"); */
+    return test_1;
+}
+
 int ft_2_2() {
-    /* printf("ft2\n"); */
+    /* printf("Transition ft_2_2 executed\n"); */
     return 1;
 }
 
 int ft_2_3() {
-    /* printf("ft3\n"); */
-    return 1;
+    /* printf("Transition ft_2_3 executed\n"); */
+    return test_3;
 }
 
 int ft_2_4() {
-    /* printf("ft4\n"); */
+    /* printf("Transition ft_2_4 executed\n"); */
     return 1;
 }
 
 int ft_2_5() {
-    /* printf("ft5\n"); */
+    /* printf("Transition ft_2_5 executed\n"); */
+    return test_5;
+}
+
+int ft_2_6() {
+    /* printf("Transition ft_2_6 executed\n"); */
     return 1;
 }

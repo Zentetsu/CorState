@@ -62,14 +62,10 @@ int start(StateMachine *sm) {
 
     char breaked = 1;
     Transition *tr = NULL;
-    State *st = NULL;
     int in_id, out_id;
 
     int state_id = INT_INFINITY;
-    int state_id_out = -INT_INFINITY;
-    int id_check = 0;
     char next_transition = 0;
-    int state_id_enc = 0;
 
     while (breaked == 1) {
         breaked = 0;
@@ -78,39 +74,26 @@ int start(StateMachine *sm) {
             tr = (Transition *)getFromList(sm->transitions->keys, i);
             getTrInOutID(tr, &in_id, &out_id);
 
-            if ((in_id == state_id) && evaluate(tr) == 1) {
+            if (((in_id == state_id) || ((-in_id == state_id) && (state_id != -INT_INFINITY))) && (evaluate(tr) == 1) && next_transition == 0) {
                 state_id = out_id;
-                state_id_out = -out_id;
 
-                if ((sm->states_stack->size > 0) && (inList(sm->states_stack, (void *)&(state_id_out)) == 1)) {
-                    while (sm->states_stack->size > 0) {
-                        id_check = *(int *)getFromList(sm->states_stack, sm->states_stack->size - 1);
-
-                        if (id_check == state_id_out) {
-                            popFromList(sm->states_stack);
-                        } else {
-                            break;
-                        }
-                    }
-
-                    next_transition = 1;
-                }
+                breaked = 1;
+                break;
+            } else if ((in_id == -state_id) && next_transition == 1) {
+                state_id = out_id;
+                next_transition = 0;
 
                 breaked = 1;
                 break;
             }
         }
 
-        if ((breaked == 1) && (state_id != -INT_INFINITY) && next_transition == 0) {
-            st = (State *)getFromDictKey(sm->states, (void *)&state_id);
-            if (st->encapsulated_module == 1) {
-                state_id_enc = state_id;
-                addToList(sm->states_stack, (void *)&state_id_enc);
+        if (breaked == 1) {
+            if ((state_id != -INT_INFINITY) && (state_id >= 0) && next_transition == 0) {
+                action((State *)getFromDictKey(sm->states, (void *)&state_id));
+            } else if ((state_id != -INT_INFINITY) && (state_id < 0)) {
+                next_transition = 1;
             }
-
-            action((State *)getFromDictKey(sm->states, (void *)&state_id));
-        } else if (next_transition == 1) {
-            next_transition = 0;
         }
     }
 

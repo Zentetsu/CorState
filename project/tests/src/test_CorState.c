@@ -219,8 +219,8 @@ void test_loadJSONFile2() {
         loadJSONFile(sm, "../../../project/tests/test_2.json");
     }
 
-    TEST_ASSERT_EQUAL_INT(4, getDictSize(sm->states));
-    TEST_ASSERT_EQUAL_INT(6, getDictSize(sm->transitions));
+    TEST_ASSERT_EQUAL_INT(5, getDictSize(sm->states));
+    TEST_ASSERT_EQUAL_INT(7, getDictSize(sm->transitions));
 
     int res = start(sm);
 
