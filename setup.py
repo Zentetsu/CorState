@@ -1,4 +1,4 @@
-'''
+"""
 File: setup.py
 Created Date: Sunday, July 0th 2020, 12:03:56 am
 Author: Zentetsu
@@ -31,21 +31,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----
 
 HISTORY:
-'''
-
+"""
 
 from setuptools import setup, find_packages
 
 setup(
-    name='CorState',
-    version='0.1.3-dev0',
-    author='Zentetsu',
-    packages=find_packages(exclude=['tests*']),
-    license='GPLv3',
-    description='Lightweight and versatile State Machine library',
-    long_description=open('README.md').read(),
+    name="CorState",
+    version="0.1.4-dev0",
+    author="Zentetsu",
+    packages=find_packages(exclude=["tests*"]),
+    license="GPLv3",
+    description="Lightweight and versatile State Machine library",
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     install_requires=[],
-    url='https://github.com/Zentetsu/CorState',
-    python_requires='>=3.5',
+    url="https://github.com/Zentetsu/CorState",
+    python_requires=">=3.8",
 )
