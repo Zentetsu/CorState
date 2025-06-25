@@ -38,6 +38,12 @@ def fa_2_4():
     pass
 
 
+def fa_2_5():
+    # TODO
+    # print("fa_2_5")
+    pass
+
+
 def ft_2_0():
     # TODO
     # print("ft_2_0")
@@ -71,10 +77,22 @@ def ft_2_4():
 def ft_2_5():
     # TODO
     # print("ft_2_5")
-    return test_5
+    return False
 
 
 def ft_2_6():
     # TODO
     # print("ft_2_6")
+    return True
+
+
+def ft_2_7():
+    # TODO
+    # print("ft_2_7")
+    return True
+
+
+def ft_2_8():
+    # TODO
+    # print("ft_2_8")
     return True

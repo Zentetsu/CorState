@@ -31,6 +31,11 @@
                     "id": 4,
                     "action": "fa_2_4",
                     "encapsulation": false
+                },
+                "s5": {
+                    "id": 5,
+                    "action": "fa_2_5",
+                    "encapsulation": false
                 }
             },
             "Transition": {
@@ -69,6 +74,18 @@
                     "id_in": 1,
                     "id_out": 4,
                     "evaluation": "ft_2_5"
+                },
+                "t7": {
+                    "id": 7,
+                    "id_in": 1,
+                    "id_out": 5,
+                    "evaluation": "ft_2_7"
+                },
+                "t8": {
+                    "id": 8,
+                    "id_in": 5,
+                    "id_out": 4,
+                    "evaluation": "ft_2_8"
                 },
                 "out": {
                     "id": 6,

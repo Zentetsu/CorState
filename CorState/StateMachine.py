@@ -120,9 +120,23 @@ class StateMachine:
 
                     _breaked = True
                     break
+                elif (
+                    self.__transitions[tr].getInOutID()[0] in self.__states_stack
+                    and self.__transitions[tr].evaluate()
+                ):
+                    _stateID = self.__transitions[tr].getInOutID()[1]
+
+                    while self.__transitions[tr].getInOutID()[0] in self.__states_stack:
+                        self.__states_stack.pop()
+
+                    _breaked = True
+                    break
 
             if _breaked:
                 if _stateID != -inf and _stateID >= 0 and _next_transition is False:
+                    if self.__states[_stateID].getEncapsulation():
+                        self.__states_stack.append(_stateID)
+
                     self.__states[_stateID].run()
                 elif _stateID != -inf and _stateID < 0:
                     _next_transition = True
