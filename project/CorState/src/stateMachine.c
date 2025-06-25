@@ -84,7 +84,7 @@ int start(StateMachine *sm) {
                 break;
             }
 
-            if ((in_id == -state_id) && next_transition == 1) {
+            if ((in_id == -state_id) && (evaluate(tr) == 1) && next_transition == 1) {
                 state_id = out_id;
                 next_transition = 0;
 
@@ -104,7 +104,7 @@ int start(StateMachine *sm) {
             }
         }
 
-        if (breaked == 1) {
+        if ((breaked == 1) && (state_id != -INT_INFINITY)) {
             if ((state_id != -INT_INFINITY) && (state_id >= 0) && next_transition == 0) {
                 st = (State *)getFromDictKey(sm->states, (void *)&state_id);
 
@@ -117,6 +117,8 @@ int start(StateMachine *sm) {
             } else if ((state_id != -INT_INFINITY) && (state_id < 0)) {
                 next_transition = 1;
             }
+        } else {
+            breaked = 0;
         }
     }
 
