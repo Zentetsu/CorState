@@ -124,10 +124,10 @@ void test_removeFromListData() {
     addToList(list, "World");
     addToList(list, "Zentetsu");
 
-    removeFromListData(list, "World");
+    removeFromListData(list, "World", T_STRING);
     TEST_ASSERT_EQUAL_STRING("Zentetsu", list->head->next->data);
 
-    removeFromListData(list, "Hello");
+    removeFromListData(list, "Hello", T_STRING);
     TEST_ASSERT_EQUAL_STRING("Zentetsu", list->head->data);
 
     freeList(&list);

@@ -133,10 +133,12 @@ void removeFromListIndex(List *list, int index) {
     list->size--;
 }
 
-void removeFromListData(List *list, void *data) {
+void removeFromListData(List *list, void *data, int type) {
     NodeList *node = list->head;
 
-    if (node->data == data) {
+    EqFunc eqfct = eqTest(type);
+
+    if (eqfct(node->data, data)) {
         list->head = node->next;
         free(node);
         list->size--;
@@ -145,7 +147,7 @@ void removeFromListData(List *list, void *data) {
     }
 
     while (node->next != NULL) {
-        if (node->next->data == data) {
+        if (eqfct(node->data, data)) {
             NodeList *temp = node->next;
             node->next = temp->next;
             free(temp);

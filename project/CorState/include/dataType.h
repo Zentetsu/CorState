@@ -2,6 +2,8 @@
 #define DATA_TYPE_H
 
 #include <limits.h>
+#include <stddef.h>
+#include <string.h>
 
 #define T_INT 0
 #define T_FLOAT 1
@@ -42,7 +44,15 @@ typedef struct Dict {
 } Dict;
 
 int isinfInt(int value);
-
 void cleanName(char *name);
+
+typedef int (*EqFunc)(const void *, const void *);
+EqFunc eqTest(const int type);
+
+int eqInt(const void *a, const void *b);
+int eqFloat(const void *a, const void *b);
+int eqDouble(const void *a, const void *b);
+int eqString(const void *a, const void *b);
+int eqChar(const void *a, const void *b);
 
 #endif

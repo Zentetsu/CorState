@@ -98,7 +98,7 @@ void removeFromDictIndex(Dict *dict, int index) {
         prev->next = node->next;
     }
 
-    removeFromListData(dict->keys, node->key);
+    removeFromListData(dict->keys, node->key, dict->k_type);
 
     free(node);
     dict->size--;
@@ -116,7 +116,7 @@ void removeFromDictKey(Dict *dict, void *key) {
                 prev->next = node->next;
             }
 
-            removeFromListData(dict->keys, key);
+            removeFromListData(dict->keys, key, dict->k_type);
 
             free(node);
             dict->size--;

@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "bitset": "c"
+        "bitset": "c",
+        "genericlist.h": "c"
     },
     "C_Cpp.default.includePath": [
         "/home/zentetsu/miniconda3/envs/Project/include/"

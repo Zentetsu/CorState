@@ -67,6 +67,9 @@ int start(StateMachine *sm) {
     int state_id = INT_INFINITY;
     char next_transition = 0;
 
+    int state_id_enc = 0;
+    State *st = NULL;
+
     while (breaked == 1) {
         breaked = 0;
 
@@ -79,9 +82,22 @@ int start(StateMachine *sm) {
 
                 breaked = 1;
                 break;
-            } else if ((in_id == -state_id) && next_transition == 1) {
+            }
+
+            if ((in_id == -state_id) && next_transition == 1) {
                 state_id = out_id;
                 next_transition = 0;
+
+                breaked = 1;
+                break;
+            }
+
+            if ((inList(sm->states_stack, (void *)&in_id)) && (evaluate(tr) == 1)) {
+                state_id = out_id;
+
+                while (inList(sm->states_stack, (void *)&in_id)) {
+                    popFromList(sm->states_stack);
+                }
 
                 breaked = 1;
                 break;
@@ -90,6 +106,13 @@ int start(StateMachine *sm) {
 
         if (breaked == 1) {
             if ((state_id != -INT_INFINITY) && (state_id >= 0) && next_transition == 0) {
+                st = (State *)getFromDictKey(sm->states, (void *)&state_id);
+
+                if (st->encapsulated_module == 1) {
+                    state_id_enc = state_id;
+                    addToList(sm->states_stack, (void *)&state_id_enc);
+                }
+
                 action((State *)getFromDictKey(sm->states, (void *)&state_id));
             } else if ((state_id != -INT_INFINITY) && (state_id < 0)) {
                 next_transition = 1;

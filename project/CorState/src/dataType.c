@@ -48,3 +48,30 @@ void cleanName(char *name) {
 
     *pw = '\0';
 }
+
+EqFunc eqTest(const int type) {
+    switch (type) {
+        case T_INT:
+            return eqInt;
+        case T_FLOAT:
+            return eqFloat;
+        case T_DOUBLE:
+            return eqDouble;
+        case T_STRING:
+            return eqString;
+        case T_CHAR:
+            return eqChar;
+        default:
+            return NULL;
+    }
+}
+
+int eqInt(const void *a, const void *b) { return (*(int *)a == *(int *)b) ? 1 : 0; }
+
+int eqFloat(const void *a, const void *b) { return (*(float *)a == *(float *)b) ? 1 : 0; }
+
+int eqDouble(const void *a, const void *b) { return (*(double *)a == *(double *)b) ? 1 : 0; }
+
+int eqString(const void *a, const void *b) { return (strcmp((char *)a, (char *)b) == 0) ? 1 : 0; }
+
+int eqChar(const void *a, const void *b) { return (*(char *)a == *(char *)b) ? 1 : 0; }

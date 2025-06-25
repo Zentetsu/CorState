@@ -49,7 +49,7 @@ int getListSize(List *list);
 void addToList(List *list, void *data);
 void insertToList(List *list, void *data, int index);
 void removeFromListIndex(List *list, int index);
-void removeFromListData(List *list, void *data);
+void removeFromListData(List *list, void *data, int type);
 void *popFromList(List *list);
 void *getFromList(List *list, int index);
 char inList(List *list, void *data);
