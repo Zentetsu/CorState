@@ -1,0 +1,12 @@
+prefix=/home/zentetsu/miniconda3/envs/PhD
+exec_prefix=/home/zentetsu/miniconda3/envs/PhD
+libdir=/home/zentetsu/miniconda3/envs/PhD/lib
+includedir=/home/zentetsu/miniconda3/envs/PhD/include
+
+Name: json-c
+Description: A JSON implementation in C
+Version: 0.18.99
+Requires:
+Libs.private: -lm
+Libs: -L${libdir} -ljson-c
+Cflags: -I${includedir} -I${includedir}/json-c

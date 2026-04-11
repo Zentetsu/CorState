@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/zentetsu/Documents/GIT/CorState/build/dependencies/unity-subbuild/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

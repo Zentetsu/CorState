@@ -1,0 +1,71 @@
+/*
+ * File: app.css
+ * Project: CorState
+ * License: GPLv3
+ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: #1e1e1e;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 13px;
+}
+
+#toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #2d2d2d;
+    border-bottom: 1px solid #444;
+    flex-shrink: 0;
+}
+
+#toolbar button {
+    padding: 4px 10px;
+    background: #3a3a3a;
+    color: #ccc;
+    border: 1px solid #555;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#toolbar button:hover {
+    background: #4a4a4a;
+}
+
+#breadcrumb {
+    margin-left: 12px;
+    color: #888;
+    font-size: 12px;
+}
+
+#breadcrumb span {
+    cursor: pointer;
+    color: #569cd6;
+}
+
+#breadcrumb span:hover {
+    text-decoration: underline;
+}
+
+#canvas-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+#canvas-container svg {
+    width: 100%;
+    height: 100%;
+}

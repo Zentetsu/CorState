@@ -1,0 +1,15 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/zentetsu/Documents/GIT/CorState/build/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/dependencies/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c/build/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c/build/doc/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/dependencies/Unity/build/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/project/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/project/GSM/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/project/CorState/cmake_install.cmake",
+		"/home/zentetsu/Documents/GIT/CorState/build/project/tests/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/CMakeFiles/json-c-populate"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/CMakeFiles/json-c-populate.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/CMakeFiles/json-c-populate-complete.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-build.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-configure.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-download.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-install.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-patch.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-test.rule"
+		},
+		{
+			"file" : "/home/zentetsu/Documents/GIT/CorState/build/dependencies/json-c-subbuild/json-c-populate-prefix/src/json-c-populate-stamp/json-c-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"json-c-populate"
+		],
+		"name" : "json-c-populate"
+	}
+}
